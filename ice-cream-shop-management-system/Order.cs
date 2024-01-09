@@ -15,7 +15,7 @@ namespace ice_cream_shop_management_system
         public int Id { get; set; }
         public DateTime TimeReceived { get; set; }
         public DateTime? TimeFullfilled { get; set; }
-        public List<IceCream> IceCreamList { get; set; }
+        public List<IceCream> IceCreamList { get; set; } = new List<IceCream>();
         public Order() { }
         public Order(int id, DateTime timereceived)
         {
@@ -47,7 +47,7 @@ namespace ice_cream_shop_management_system
         }
         public override string ToString()
         {
-            return "ID: " + Id + "\tTime Received: " + TimeReceived;
+            return "ID: " + Id + "\tTime Received: " + TimeReceived + "\tTime Fullfilled: " + TimeFullfilled + "\tIceCreamList: " + IceCreamList;
         }
     }
 }

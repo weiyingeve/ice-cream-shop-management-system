@@ -16,7 +16,7 @@ namespace ice_cream_shop_management_system
         public int MemberId { get; set; }
         public DateTime Dob { get; set; }
         public Order CurrentOrder { get; set; }
-        public List<Order> OrderHistory { get; set; }
+        public List<Order> OrderHistory { get; set; } = new List<Order>();
         public PointCard Rewards { get; set; }
         public Customer() { }
         public Customer(string name, int memberId, DateTime dob)
