@@ -29,6 +29,18 @@ namespace ice_cream_shop_management_system
         {
             Console.WriteLine("Enter order id: ");
             int id = Convert.ToInt32(Console.ReadLine());
+            foreach (Order o in OrderHistory)
+            {
+                if (o.Id == id)
+                {
+                    Console.WriteLine("Order exists!");
+                    return null;
+                }
+                else
+                {
+                    continue;
+                }
+            }
             DateTime timeReceived = DateTime.Now;
             return new Order(id, timeReceived);
         }
