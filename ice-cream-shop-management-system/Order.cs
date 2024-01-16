@@ -14,7 +14,7 @@ namespace ice_cream_shop_management_system
     {
         public int Id { get; set; }
         public DateTime TimeReceived { get; set; }
-        public DateTime? TimeFullfilled { get; set; }
+        public DateTime? TimeFulfilled { get; set; }
         public List<IceCream> IceCreamList { get; set; } = new List<IceCream>();
         public Order() { }
         public Order(int id, DateTime timereceived)
@@ -65,12 +65,10 @@ namespace ice_cream_shop_management_system
         public void AddIceCream(IceCream iceCream)
         {
             IceCreamList.Add(iceCream);
-            Console.WriteLine("Added successfully.");
         }
         public void DeleteIceCream(int num)
         {
             IceCreamList.RemoveAt(num);
-            Console.WriteLine("Deleted successfully.");
         }
         public double CalculateTotal()
         {
@@ -83,7 +81,8 @@ namespace ice_cream_shop_management_system
         }
         public override string ToString()
         {
-            return "ID: " + Id + "\tTime Received: " + TimeReceived + "\tTime Fullfilled: " + TimeFullfilled + "\tIceCreamList: " + IceCreamList;
+            return "ID: " + Id + "\tTime Received: " + TimeReceived + "\tTime Fulfilled: " + 
+                TimeFulfilled + "\tIceCreamList: " + IceCreamList;
         }
     }
 }
