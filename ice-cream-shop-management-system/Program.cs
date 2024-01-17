@@ -138,10 +138,32 @@ void ListAllCustomers(Dictionary<int, Customer> customers)
 }
 
 //basic feature 2 - List all current orders
-void ListAllOrders()
+void ListAllOrders(Dictionary<int, Customer> customers)
 {
-    string[] csvLines = File.ReadAllLines("Order.csv");
-    string[] headings = csvLines[0].Split(',');
+    Console.WriteLine("Current Orders: ");
+    foreach (Customer customer in customers.Values)
+    {
+        if (customer.CurrentOrder != null)
+        {
+            Console.WriteLine($"{customer.Name}'s Order: ");
+            Console.WriteLine($"Order ID: {customer.CurrentOrder.Id}");
+            Console.WriteLine($"Time Received: {customer.CurrentOrder.TimeReceived}");
+            foreach (IceCream iceCream in customer.CurrentOrder.IceCreamList)
+            {
+                Console.WriteLine($"Ice cream option: {iceCream.Option}");
+                Console.WriteLine($"Ice cream scoops: {iceCream.Scoops}");
+                Console.WriteLine("Ice cream flavours: ");
+                foreach (Flavour flav in iceCream.Flavours)
+                {
+                    Console.WriteLine(flav.ToString());
+                }
+                Console.WriteLine("Ice cream toppings: ");
+                foreach (Topping topping in iceCream.Toppings)
+                {
+                    Console.WriteLine(topping.ToString());
+                }
+            }
+            Console.WriteLine();
+        }
+    }
 }
-
-ListAllCustomers(customers);
