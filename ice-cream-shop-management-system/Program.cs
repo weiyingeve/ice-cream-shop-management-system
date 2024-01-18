@@ -6,6 +6,7 @@
 
 //Toppings and Flavours
 using ice_cream_shop_management_system;
+using System.ComponentModel;
 
 string[] Toppings = { "Sprinkles", "Mochi", "Sago", "Oreos" };
 string[] regFlavours = { "Vanilla", "Chocolate", "Strawberry" };
@@ -100,6 +101,12 @@ foreach (int orderID in orderIDCustomerID.Keys)
     customer.OrderHistory.Add(orders[orderID]);
 }
 
+//Order Queue
+Queue<Order> orderqueue = new Queue<Order>();
+
+//Order Queue
+Queue<Order> goldqueue = new Queue<Order>();
+
 //Menu
 int DisplayMenu()
 {
@@ -165,5 +172,198 @@ void ListAllOrders(Dictionary<int, Customer> customers)
             }
             Console.WriteLine();
         }
+        else
+        {
+            Console.WriteLine("No current orders.");
+        }
+    }
+    Console.WriteLine();
+}
+
+//basic feature 3 - Register a new customer
+void NewCustomer(Dictionary<int, Customer> customers)
+{
+    Console.Write("Enter Name: ");
+    string name = Console.ReadLine();
+    Console.Write("Enter ID Number: ");
+    int id = Convert.ToInt32(Console.ReadLine());
+    Console.Write("Enter Date of Birth: ");
+    DateTime dob = DateTime.Parse(Console.ReadLine());
+
+    Customer customer = new Customer(name, id, dob);
+    PointCard pointCard = new PointCard();
+    customer.Rewards = pointCard;
+    customers.Add(id, customer);
+    string data = name + "," + id + "," + dob.ToString();
+
+    using (StreamWriter sw = new StreamWriter("customers.csv", true)) 
+    { 
+        sw.WriteLine(data);
+    }
+
+    if (customers.ContainsKey(id))
+    {
+        Console.WriteLine("Customer resgistered successfully!");
+        Console.WriteLine();
+    }
+    else
+    {
+        Console.WriteLine("Customer resistration failed!");
+        Console.WriteLine();
     }
 }
+
+//basic feature 4 - Create customer's order
+void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Order> orders)
+{
+    ListAllCustomers(customers);
+    Console.WriteLine();
+    Console.Write("Enter your customer ID: ");
+    int id = Convert.ToInt32(Console.ReadLine());
+    Customer customer = customers[id];
+
+    Order order = new Order();
+
+    Console.Write("Enter option: ");
+    string option = Console.ReadLine();
+    Console.Write("Enter number of scoops: ");
+    int scoopnum = Convert.ToInt32(Console.ReadLine());
+    List<Flavour> flavours = new List<Flavour>();
+    Console.Write("Enter flavour type (or nil to stop adding): ");
+    string flavourtype = Console.ReadLine();
+    Console.Write("Is it premium? (True/False): ");
+    bool flavourpremium = Convert.ToBoolean(Console.ReadLine());
+    Console.Write("Enter flavour quantity: ");
+    int flavourquantity = Convert.ToInt32(Console.ReadLine());
+    Flavour flavour = new Flavour(flavourtype, flavourpremium, flavourquantity);
+    flavours.Add(flavour);
+    while (flavourtype != "nil")
+    {
+        Console.Write("Enter flavour (or nil to stop adding): ");
+        flavourtype = Console.ReadLine();
+        Console.Write("Is it premium? (True/False): ");
+        flavourpremium = Convert.ToBoolean(Console.ReadLine());
+        Console.Write("Enter flavour quantity: ");
+        flavourquantity = Convert.ToInt32(Console.ReadLine());
+        flavour = new Flavour(flavourtype, flavourpremium, flavourquantity);
+        flavours.Add(flavour);
+    }
+    List<Topping> toppings = new List<Topping>();
+    Console.Write("Enter topping (or nil to stop adding): ");
+    string toppingtype = Console.ReadLine();
+    Topping topping = new Topping(toppingtype);
+    toppings.Add(topping);
+    while (toppingtype != "nil")
+    {
+        Console.Write("Enter topping (or nil to stop adding): ");
+        toppingtype = Console.ReadLine();
+        topping = new Topping(toppingtype);
+        toppings.Add(topping);
+    }
+
+    IceCream iceCream = null;
+    switch (option)
+    {
+        case "Waffle":
+            Console.Write("Enter waffle flavour: ");
+            string waffleflavour = Console.ReadLine();
+            iceCream = new Waffle("Waffle", scoopnum, flavours, toppings, waffleflavour);
+            break;
+        case "Cone":
+            Console.Write("Is cone dipped? (True/False): ");
+            bool dipped = Convert.ToBoolean(Console.ReadLine());
+            iceCream = new Cone("Cone", scoopnum, flavours, toppings, dipped);
+            break;
+        case "Cup":
+            iceCream = new Cup("Cup", scoopnum, flavours, toppings);
+            break;
+    }
+    order.AddIceCream(iceCream);
+
+    Console.Write("Add Another Ice Cream? [Y/N]: ");
+    string addicecream = Console.ReadLine();
+    while (addicecream == "Y")
+    {
+        Console.WriteLine("Enter option: ");
+        option = Console.ReadLine();
+        Console.WriteLine("Enter number of scoops: ");
+        scoopnum = Convert.ToInt32(Console.ReadLine());
+        flavours = new List<Flavour>();
+        Console.WriteLine("Enter flavour type (or nil to stop adding): ");
+        flavourtype = Console.ReadLine();
+        Console.WriteLine("Is it premium? (True/False): ");
+        flavourpremium = Convert.ToBoolean(Console.ReadLine());
+        Console.WriteLine("Enter new flavour quantity: ");
+        flavourquantity = Convert.ToInt32(Console.ReadLine());
+        flavour = new Flavour(flavourtype, flavourpremium, flavourquantity);
+        flavours.Add(flavour);
+        while (flavourtype != "nil")
+        {
+            Console.WriteLine("Enter new flavour (or nil to stop adding): ");
+            flavourtype = Console.ReadLine();
+            Console.WriteLine("Is it premium? (True/False): ");
+            flavourpremium = Convert.ToBoolean(Console.ReadLine());
+            Console.WriteLine("Enter new flavour quantity: ");
+            flavourquantity = Convert.ToInt32(Console.ReadLine());
+            flavour = new Flavour(flavourtype, flavourpremium, flavourquantity);
+            flavours.Add(flavour);
+        }
+        toppings = new List<Topping>();
+        Console.WriteLine("Enter new topping (or nil to stop adding): ");
+        toppingtype = Console.ReadLine();
+        topping = new Topping(toppingtype);
+        toppings.Add(topping);
+        while (toppingtype != "nil")
+        {
+            Console.WriteLine("Enter new topping (or nil to stop adding): ");
+            toppingtype = Console.ReadLine();
+            topping = new Topping(toppingtype);
+            toppings.Add(topping);
+        }
+
+        iceCream = null;
+        switch (option)
+        {
+            case "Waffle":
+                Console.Write("Enter waffle flavour: ");
+                string waffleflavour = Console.ReadLine();
+                iceCream = new Waffle("Waffle", scoopnum, flavours, toppings, waffleflavour);
+                break;
+            case "Cone":
+                Console.Write("Is cone dipped? (True/False): ");
+                bool dipped = Convert.ToBoolean(Console.ReadLine());
+                iceCream = new Cone("Cone", scoopnum, flavours, toppings, dipped);
+                break;
+            case "Cup":
+                iceCream = new Cup("Cup", scoopnum, flavours, toppings);
+                break;
+        }
+        order.AddIceCream(iceCream);
+    }
+
+    customer.CurrentOrder = order;
+    orders.Add(orders.Count + 1, order);
+
+    if (customer.Rewards.Tier == "Gold")
+    {
+        goldqueue.Enqueue(order);
+    }
+    else
+    {
+        orderqueue.Enqueue(order);
+    }
+
+    if (orders.ContainsValue(order))
+    {
+        Console.WriteLine("Order made successfully!");
+    }
+    else
+    {
+        Console.WriteLine("Order made failed!");
+    }
+}
+
+ListAllCustomers(customers);
+ListAllOrders(customers);
+NewCustomer(customers);
+CreateCustomerOrder(customers, orders);
