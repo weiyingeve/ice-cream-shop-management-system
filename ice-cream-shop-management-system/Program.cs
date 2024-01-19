@@ -136,7 +136,7 @@ void ListAllCustomers(Dictionary<int, Customer> customers)
     {
         Console.WriteLine("{0, -10} {1, -10} {2, -15:dd/MM/yyyy} {3, -20} {4, -15} {5, -10} {6, -10} {7, -10}",
             customer.Name, customer.MemberId, customer.Dob,
-            customer.CurrentOrder != null ? customer.CurrentOrder.Id.ToString() : "No Current Order",
+            customer.CurrentOrder != null ? customer.CurrentOrder.Id.ToString() + 1 : "No Current Order",
             string.Join(", ", customer.OrderHistory.Select(order => order.Id)),
             customer.Rewards.Points,
             customer.Rewards.PunchCard,
@@ -193,6 +193,7 @@ void NewCustomer(Dictionary<int, Customer> customers)
 
     Customer customer = new Customer(name, id, dob);
     PointCard pointCard = new PointCard();
+    pointCard.Tier = "Ordinary";
     customer.Rewards = pointCard;
     customers.Add(id, customer);
     string data = name + "," + id + "," + dob.ToString();
@@ -232,34 +233,26 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
     List<Flavour> flavours = new List<Flavour>();
     Console.Write("Enter flavour type (or nil to stop adding): ");
     string flavourtype = Console.ReadLine();
-    Console.Write("Is it premium? (True/False): ");
-    bool flavourpremium = Convert.ToBoolean(Console.ReadLine());
-    Console.Write("Enter flavour quantity: ");
-    int flavourquantity = Convert.ToInt32(Console.ReadLine());
-    Flavour flavour = new Flavour(flavourtype, flavourpremium, flavourquantity);
-    flavours.Add(flavour);
     while (flavourtype != "nil")
     {
+        Console.Write("Is it premium? (True/False): ");
+        bool flavourpremium = Convert.ToBoolean(Console.ReadLine());
+        Console.Write("Enter flavour quantity: ");
+        int flavourquantity = Convert.ToInt32(Console.ReadLine());
+        Flavour flavour = new Flavour(flavourtype, flavourpremium, flavourquantity);
+        flavours.Add(flavour);
         Console.Write("Enter flavour (or nil to stop adding): ");
         flavourtype = Console.ReadLine();
-        Console.Write("Is it premium? (True/False): ");
-        flavourpremium = Convert.ToBoolean(Console.ReadLine());
-        Console.Write("Enter flavour quantity: ");
-        flavourquantity = Convert.ToInt32(Console.ReadLine());
-        flavour = new Flavour(flavourtype, flavourpremium, flavourquantity);
-        flavours.Add(flavour);
     }
     List<Topping> toppings = new List<Topping>();
     Console.Write("Enter topping (or nil to stop adding): ");
     string toppingtype = Console.ReadLine();
-    Topping topping = new Topping(toppingtype);
-    toppings.Add(topping);
     while (toppingtype != "nil")
     {
+        Topping topping = new Topping(toppingtype);
+        toppings.Add(topping);
         Console.Write("Enter topping (or nil to stop adding): ");
         toppingtype = Console.ReadLine();
-        topping = new Topping(toppingtype);
-        toppings.Add(topping);
     }
 
     IceCream iceCream = null;
@@ -285,41 +278,33 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
     string addicecream = Console.ReadLine();
     while (addicecream == "Y")
     {
-        Console.WriteLine("Enter option: ");
+        Console.Write("Enter option: ");
         option = Console.ReadLine();
-        Console.WriteLine("Enter number of scoops: ");
+        Console.Write("Enter number of scoops: ");
         scoopnum = Convert.ToInt32(Console.ReadLine());
         flavours = new List<Flavour>();
-        Console.WriteLine("Enter flavour type (or nil to stop adding): ");
+        Console.Write("Enter flavour type (or nil to stop adding): ");
         flavourtype = Console.ReadLine();
-        Console.WriteLine("Is it premium? (True/False): ");
-        flavourpremium = Convert.ToBoolean(Console.ReadLine());
-        Console.WriteLine("Enter flavour quantity: ");
-        flavourquantity = Convert.ToInt32(Console.ReadLine());
-        flavour = new Flavour(flavourtype, flavourpremium, flavourquantity);
-        flavours.Add(flavour);
         while (flavourtype != "nil")
         {
-            Console.WriteLine("Enter flavour (or nil to stop adding): ");
-            flavourtype = Console.ReadLine();
-            Console.WriteLine("Is it premium? (True/False): ");
-            flavourpremium = Convert.ToBoolean(Console.ReadLine());
-            Console.WriteLine("Enter flavour quantity: ");
-            flavourquantity = Convert.ToInt32(Console.ReadLine());
-            flavour = new Flavour(flavourtype, flavourpremium, flavourquantity);
+            Console.Write("Is it premium? (True/False): ");
+            bool flavourpremium = Convert.ToBoolean(Console.ReadLine());
+            Console.Write("Enter flavour quantity: ");
+            int flavourquantity = Convert.ToInt32(Console.ReadLine());
+            Flavour flavour = new Flavour(flavourtype, flavourpremium, flavourquantity);
             flavours.Add(flavour);
+            Console.Write("Enter flavour (or nil to stop adding): ");
+            flavourtype = Console.ReadLine();
         }
         toppings = new List<Topping>();
-        Console.WriteLine("Enter topping (or nil to stop adding): ");
+        Console.Write("Enter topping (or nil to stop adding): ");
         toppingtype = Console.ReadLine();
-        topping = new Topping(toppingtype);
-        toppings.Add(topping);
         while (toppingtype != "nil")
         {
-            Console.WriteLine("Enter topping (or nil to stop adding): ");
-            toppingtype = Console.ReadLine();
-            topping = new Topping(toppingtype);
+            Topping topping = new Topping(toppingtype);
             toppings.Add(topping);
+            Console.Write("Enter topping (or nil to stop adding): ");
+            toppingtype = Console.ReadLine();
         }
 
         iceCream = null;
@@ -480,34 +465,26 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
             List<Flavour> flavours = new List<Flavour>();
             Console.WriteLine("Enter flavour type (or nil to stop adding): ");
             string flavourtype = Console.ReadLine();
-            Console.WriteLine("Is it premium? (True/False): ");
-            bool flavourpremium = Convert.ToBoolean(Console.ReadLine());
-            Console.WriteLine("Enter flavour quantity: ");
-            int flavourquantity = Convert.ToInt32(Console.ReadLine());
-            Flavour flavour = new Flavour(flavourtype, flavourpremium, flavourquantity);
-            flavours.Add(flavour);
             while (flavourtype != "nil")
             {
+                Console.WriteLine("Is it premium? (True/False): ");
+                bool flavourpremium = Convert.ToBoolean(Console.ReadLine());
+                Console.WriteLine("Enter flavour quantity: ");
+                int flavourquantity = Convert.ToInt32(Console.ReadLine());
+                Flavour flavour = new Flavour(flavourtype, flavourpremium, flavourquantity);
+                flavours.Add(flavour);
                 Console.WriteLine("Enter flavour (or nil to stop adding): ");
                 flavourtype = Console.ReadLine();
-                Console.WriteLine("Is it premium? (True/False): ");
-                flavourpremium = Convert.ToBoolean(Console.ReadLine());
-                Console.WriteLine("Enter flavour quantity: ");
-                flavourquantity = Convert.ToInt32(Console.ReadLine());
-                flavour = new Flavour(flavourtype, flavourpremium, flavourquantity);
-                flavours.Add(flavour);
             }
             List<Topping> toppings = new List<Topping>();
             Console.WriteLine("Enter topping (or nil to stop adding): ");
             string toppingtype = Console.ReadLine();
-            Topping topping = new Topping(toppingtype);
-            toppings.Add(topping);
             while (toppingtype != "nil")
             {
+                Topping topping = new Topping(toppingtype);
+                toppings.Add(topping);
                 Console.WriteLine("Enter topping (or nil to stop adding): ");
                 toppingtype = Console.ReadLine();
-                topping = new Topping(toppingtype);
-                toppings.Add(topping);
             }
 
             IceCream iceCream = null;
