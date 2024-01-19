@@ -576,3 +576,38 @@ while (option != 0)
     Console.WriteLine();
     option = DisplayMenu();
 }
+
+//advanced features - a
+
+
+//advanced features - b - display monthly charged amounts breakdown & total charged amounts for the year
+void DisplayChargedAmounts(Dictionary<int, Order> orders)
+{
+    Console.Write("Enter the year: ");
+    int year = Convert.ToInt32(Console.ReadLine());
+    SortedList<DateTime, Order> OrdersInYear = new SortedList<DateTime, Order>();
+    foreach (Order order in orders.Values)
+    {
+        DateTime orderDateTime = (DateTime)order.TimeFulfilled;
+        int orderyear = orderDateTime.Year;
+        if (orderyear == year)
+        {
+            OrdersInYear.Add(orderDateTime, order);
+        }
+        else continue;
+    }
+    float janTotal;
+    float febTotal;
+    float marTotal;
+    float aprTotal;
+    float mayTotal;
+    float junTotal;
+    float julTotal;
+    float augTotal;
+    float sepTotal;
+    float octTotal;
+    float novTotal;
+    float decTotal;
+    float overallTotal;
+    
+}
