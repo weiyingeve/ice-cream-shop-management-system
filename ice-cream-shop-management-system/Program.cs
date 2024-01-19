@@ -206,11 +206,13 @@ void NewCustomer(Dictionary<int, Customer> customers)
 
     if (customers.ContainsKey(id))
     {
+        Console.WriteLine();
         Console.WriteLine("Customer resgistered successfully!");
         Console.WriteLine();
     }
     else
     {
+        Console.WriteLine();
         Console.WriteLine("Customer resistration failed!");
         Console.WriteLine();
     }
