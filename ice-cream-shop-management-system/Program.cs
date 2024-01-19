@@ -6,6 +6,7 @@
 
 //Toppings and Flavours
 using ice_cream_shop_management_system;
+using System.Collections;
 using System.ComponentModel;
 using System.Data;
 
@@ -546,6 +547,111 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
     }
 }
 
+//advanced features - a
+
+
+//advanced features - b - display monthly charged amounts breakdown & total charged amounts for the year
+void DisplayChargedAmounts(Dictionary<int, Order> orders)
+{
+    Console.Write("Enter the year: ");
+    int year = Convert.ToInt32(Console.ReadLine());
+    Dictionary<DateTime, Order> OrdersInYear = new Dictionary<DateTime, Order>();
+    foreach (Order order in orders.Values)
+    {
+        DateTime orderDateTime = (DateTime)order.TimeFulfilled;
+        int orderyear = orderDateTime.Year;
+        if (orderyear == year)
+        {
+            OrdersInYear.Add(orderDateTime, order);
+        }
+        else continue;
+    }
+    double janTotal = 0;
+    double febTotal = 0;
+    double marTotal = 0;
+    double aprTotal = 0;
+    double mayTotal = 0;
+    double junTotal = 0;
+    double julTotal = 0;
+    double augTotal = 0;
+    double sepTotal = 0;
+    double octTotal = 0;
+    double novTotal = 0;
+    double decTotal = 0;
+    double overallTotal = 0;
+
+    foreach (KeyValuePair<DateTime, Order> pair in OrdersInYear)
+    {
+        if (pair.Key.Month == 1)
+        {
+            janTotal += pair.Value.CalculateTotal();
+        }
+        else if (pair.Key.Month == 2)
+        {
+            febTotal += pair.Value.CalculateTotal();
+        }
+        else if (pair.Key.Month == 3)
+        {
+            marTotal += pair.Value.CalculateTotal();
+        }
+        else if (pair.Key.Month == 4)
+        {
+            aprTotal += pair.Value.CalculateTotal();
+        }
+        else if (pair.Key.Month == 5)
+        {
+            mayTotal += pair.Value.CalculateTotal();
+        }
+        else if (pair.Key.Month == 6)
+        {
+            junTotal += pair.Value.CalculateTotal();
+        }
+        else if (pair.Key.Month == 7)
+        {
+            julTotal += pair.Value.CalculateTotal();
+        }
+        else if (pair.Key.Month == 8)
+        {
+            augTotal += pair.Value.CalculateTotal();
+        }
+        else if (pair.Key.Month == 9)
+        {
+            sepTotal += pair.Value.CalculateTotal();
+        }
+        else if (pair.Key.Month == 10)
+        {
+            octTotal += pair.Value.CalculateTotal();
+        }
+        else if (pair.Key.Month == 11)
+        {
+            novTotal += pair.Value.CalculateTotal();
+        }
+        else
+        {
+            decTotal += pair.Value.CalculateTotal();
+        }
+    }
+    overallTotal = janTotal + febTotal + marTotal + aprTotal + mayTotal + junTotal +
+        julTotal + augTotal + sepTotal + octTotal + novTotal + decTotal;
+
+    Console.WriteLine();
+    Console.WriteLine("Jan {0}: ${1}", year, janTotal.ToString("0.00"));
+    Console.WriteLine("Feb {0}: ${1}", year, febTotal.ToString("0.00"));
+    Console.WriteLine("Mar {0}: ${1}", year, marTotal.ToString("0.00"));
+    Console.WriteLine("Apr {0}: ${1}", year, aprTotal.ToString("0.00"));
+    Console.WriteLine("May {0}: ${1}", year, mayTotal.ToString("0.00"));
+    Console.WriteLine("Jun {0}: ${1}", year, junTotal.ToString("0.00"));
+    Console.WriteLine("Jul {0}: ${1}", year, julTotal.ToString("0.00"));
+    Console.WriteLine("Aug {0}: ${1}", year, augTotal.ToString("0.00"));
+    Console.WriteLine("Sep {0}: ${1}", year, sepTotal.ToString("0.00"));
+    Console.WriteLine("Oct {0}: ${1}", year, octTotal.ToString("0.00"));
+    Console.WriteLine("Nov {0}: ${1}", year, novTotal.ToString("0.00"));
+    Console.WriteLine("Dec {0}: ${1}", year, decTotal.ToString("0.00"));
+    Console.WriteLine();
+    Console.WriteLine("Total: ${0}", overallTotal.ToString("0.00"));
+}
+
+
 int option = DisplayMenu();
 while (option != 0)
 {
@@ -577,37 +683,4 @@ while (option != 0)
     option = DisplayMenu();
 }
 
-//advanced features - a
-
-
-//advanced features - b - display monthly charged amounts breakdown & total charged amounts for the year
-void DisplayChargedAmounts(Dictionary<int, Order> orders)
-{
-    Console.Write("Enter the year: ");
-    int year = Convert.ToInt32(Console.ReadLine());
-    SortedList<DateTime, Order> OrdersInYear = new SortedList<DateTime, Order>();
-    foreach (Order order in orders.Values)
-    {
-        DateTime orderDateTime = (DateTime)order.TimeFulfilled;
-        int orderyear = orderDateTime.Year;
-        if (orderyear == year)
-        {
-            OrdersInYear.Add(orderDateTime, order);
-        }
-        else continue;
-    }
-    float janTotal;
-    float febTotal;
-    float marTotal;
-    float aprTotal;
-    float mayTotal;
-    float junTotal;
-    float julTotal;
-    float augTotal;
-    float sepTotal;
-    float octTotal;
-    float novTotal;
-    float decTotal;
-    float overallTotal;
-    
-}
+DisplayChargedAmounts(orders);
