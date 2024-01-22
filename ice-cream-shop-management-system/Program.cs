@@ -549,8 +549,11 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
     }
 }
 
-//advanced features - a
-
+//advanced features - a - Process an order and checkout
+void ProcessOrderAndCheckout(Queue<Order> queue)
+{
+    Order order = queue.Dequeue();
+}
 
 //advanced features - b - display monthly charged amounts breakdown & total charged amounts for the year
 void DisplayChargedAmounts(Dictionary<int, Order> orders)
@@ -685,4 +688,5 @@ while (option != 0)
     option = DisplayMenu();
 }
 
+ProcessOrderAndCheckout(goldqueue);
 DisplayChargedAmounts(orders);
