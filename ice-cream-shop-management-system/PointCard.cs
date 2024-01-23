@@ -37,7 +37,7 @@ namespace ice_cream_shop_management_system
             }
             else
             {
-                PunchCard = 0;
+                PunchCard = 10;
             }
         }
         public override string ToString()

@@ -149,15 +149,16 @@ void ListAllCustomers(Dictionary<int, Customer> customers)
 //basic feature 2 - List all current orders
 void ListAllOrders(Dictionary<int, Customer> customers)
 {
-    Console.WriteLine("Current Orders: ");
-    foreach (Customer customer in customers.Values)
+    Console.WriteLine();
+    if (goldqueue.Count > 0)
     {
-        if (customer.CurrentOrder != null)
+        Console.WriteLine("Orders In Gold Queue: ");
+        foreach (Order goldorder in goldqueue)
         {
-            Console.WriteLine($"{customer.Name}'s Order: ");
-            Console.WriteLine($"Order ID: {customer.CurrentOrder.Id}");
-            Console.WriteLine($"Time Received: {customer.CurrentOrder.TimeReceived}");
-            foreach (IceCream iceCream in customer.CurrentOrder.IceCreamList)
+            Console.WriteLine();
+            Console.WriteLine($"Order ID: {goldorder.Id}");
+            Console.WriteLine($"Time Received: {goldorder.TimeReceived}");
+            foreach (IceCream iceCream in goldorder.IceCreamList)
             {
                 Console.WriteLine($"Ice cream option: {iceCream.Option}");
                 Console.WriteLine($"Ice cream scoops: {iceCream.Scoops}");
@@ -174,10 +175,43 @@ void ListAllOrders(Dictionary<int, Customer> customers)
             }
             Console.WriteLine();
         }
-        else
+    }
+    else
+    {
+        Console.WriteLine("No orders in gold queue.");
+    }
+    
+    Console.WriteLine();
+
+    if (orderqueue.Count > 0) 
+    {
+        Console.WriteLine("Orders In Regular Queue: ");
+        foreach (Order order in orderqueue)
         {
-            Console.WriteLine("No current orders.");
+            Console.WriteLine();
+            Console.WriteLine($"Order ID: {order.Id}");
+            Console.WriteLine($"Time Received: {order.TimeReceived}");
+            foreach (IceCream iceCream in order.IceCreamList)
+            {
+                Console.WriteLine($"Ice cream option: {iceCream.Option}");
+                Console.WriteLine($"Ice cream scoops: {iceCream.Scoops}");
+                Console.WriteLine("Ice cream flavours: ");
+                foreach (Flavour flav in iceCream.Flavours)
+                {
+                    Console.WriteLine(flav.ToString());
+                }
+                Console.WriteLine("Ice cream toppings: ");
+                foreach (Topping topping in iceCream.Toppings)
+                {
+                    Console.WriteLine(topping.ToString());
+                }
+            }
+            Console.WriteLine();
         }
+    }
+    else
+    {
+        Console.WriteLine("No orders in regular queue.");
     }
     Console.WriteLine();
 }
@@ -550,9 +584,39 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
 }
 
 //advanced features - a - Process an order and checkout
-void ProcessOrderAndCheckout(Queue<Order> queue)
+void ProcessOrderAndCheckout(Queue<Order> queue, Dictionary<int, Customer> customer)
 {
     Order order = queue.Dequeue();
+    
+    foreach (IceCream icecream in order.IceCreamList)
+    {
+        Console.WriteLine($"Ice cream {order.IceCreamList.IndexOf(icecream) + 1}");
+        Console.WriteLine($"Ice cream option: {icecream.Option}");
+        Console.WriteLine($"Ice cream scoops: {icecream.Scoops}");
+        Console.WriteLine("Ice cream flavours: ");
+        foreach (Flavour flav in icecream.Flavours)
+        {
+            Console.WriteLine(flav.ToString());
+        }
+        Console.WriteLine("Ice cream toppings: ");
+        foreach (Topping topping in icecream.Toppings)
+        {
+            Console.WriteLine(topping.ToString());
+        }
+    }
+
+    double billamt = order.CalculateTotal();
+    Console.WriteLine($"Total Bill Amount: ${billamt}");
+
+    foreach (Customer c in customers.Values)
+    {
+        if (c.CurrentOrder == order)
+        {
+            Console.WriteLine($"Membership status: {c.Rewards.Tier}");
+            Console.WriteLine($"Points: {c.Rewards.Points}");
+        }
+        else continue;
+    }
 }
 
 //advanced features - b - display monthly charged amounts breakdown & total charged amounts for the year
@@ -688,5 +752,5 @@ while (option != 0)
     option = DisplayMenu();
 }
 
-ProcessOrderAndCheckout(goldqueue);
+ProcessOrderAndCheckout(goldqueue, customers);
 DisplayChargedAmounts(orders);
