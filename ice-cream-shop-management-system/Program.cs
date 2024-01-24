@@ -233,8 +233,8 @@ void NewCustomer(Dictionary<int, Customer> customers)
     customers.Add(id, customer);
     string data = name + "," + id + "," + dob.ToString();
 
-    using (StreamWriter sw = new StreamWriter("customers.csv", true)) 
-    { 
+    using (StreamWriter sw = new StreamWriter("customers.csv", true))
+    {
         sw.WriteLine(data);
     }
 
