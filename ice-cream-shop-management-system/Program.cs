@@ -113,18 +113,32 @@ Queue<Order> goldqueue = new Queue<Order>();
 //Menu
 int DisplayMenu()
 {
-    Console.WriteLine("-------------Menu-------------");
-    Console.WriteLine("[1] List all customers");
-    Console.WriteLine("[2] List all current orders");
-    Console.WriteLine("[3] Register a new customer");
-    Console.WriteLine("[4] Create a customer's order");
-    Console.WriteLine("[5] Display order details of a customer");
-    Console.WriteLine("[6] Modify order details");
-    Console.WriteLine("[0] Exit");
-    Console.WriteLine();
-    Console.Write("Enter your choice: ");
-    int option = Convert.ToInt32(Console.ReadLine());
-    return option;
+    bool InvalidOPTION = false;
+    int option;
+
+    do
+    {
+        Console.WriteLine("-------------Menu-------------");
+        Console.WriteLine("[1] List all customers");
+        Console.WriteLine("[2] List all current orders");
+        Console.WriteLine("[3] Register a new customer");
+        Console.WriteLine("[4] Create a customer's order");
+        Console.WriteLine("[5] Display order details of a customer");
+        Console.WriteLine("[6] Modify order details");
+        Console.WriteLine("[0] Exit");
+        Console.WriteLine();
+        Console.Write("Enter your choice: ");
+        if (!int.TryParse(Console.ReadLine(), out option))
+        {
+            Console.WriteLine("Invalid input! Please try again.");
+            InvalidOPTION = true;
+        }
+        else
+        {
+            InvalidOPTION = false;
+        }
+        return option;
+    } while (InvalidOPTION);
 }
 
 //basic feature 1 - List all customers
