@@ -116,17 +116,17 @@ int DisplayMenu()
     bool InvalidOPTION = false;
     int option;
 
+    Console.WriteLine("-------------Menu-------------");
+    Console.WriteLine("[1] List all customers");
+    Console.WriteLine("[2] List all current orders");
+    Console.WriteLine("[3] Register a new customer");
+    Console.WriteLine("[4] Create a customer's order");
+    Console.WriteLine("[5] Display order details of a customer");
+    Console.WriteLine("[6] Modify order details");
+    Console.WriteLine("[0] Exit");
+    Console.WriteLine();
     do
     {
-        Console.WriteLine("-------------Menu-------------");
-        Console.WriteLine("[1] List all customers");
-        Console.WriteLine("[2] List all current orders");
-        Console.WriteLine("[3] Register a new customer");
-        Console.WriteLine("[4] Create a customer's order");
-        Console.WriteLine("[5] Display order details of a customer");
-        Console.WriteLine("[6] Modify order details");
-        Console.WriteLine("[0] Exit");
-        Console.WriteLine();
         Console.Write("Enter your choice: ");
         if (!int.TryParse(Console.ReadLine(), out option))
         {
@@ -137,8 +137,8 @@ int DisplayMenu()
         {
             InvalidOPTION = false;
         }
-        return option;
     } while (InvalidOPTION);
+    return option;
 }
 
 //basic feature 1 - List all customers
@@ -1404,13 +1404,25 @@ while (option != 0)
     {
         DisplayOrderDetailsOfCustomer(customers);
     }
-    else
+    else if (option == 6)
     {
         ModifyOrderDetails(customers);
+    }
+    else
+    {
+        Console.WriteLine("Invalid input! Please enter a valid input.");
     }
     Console.WriteLine();
     option = DisplayMenu();
 }
 
-ProcessOrderAndCheckout(goldqueue, customers);
+if (goldqueue.Count > 0)
+{
+    ProcessOrderAndCheckout(goldqueue, customers);
+}
+else
+{
+    ProcessOrderAndCheckout(orderqueue, customers);
+}
+
 DisplayChargedAmounts(orders);
