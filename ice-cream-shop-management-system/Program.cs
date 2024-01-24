@@ -13,6 +13,7 @@ using System.Data;
 string[] Toppings = { "Sprinkles", "Mochi", "Sago", "Oreos" };
 string[] regFlavours = { "Vanilla", "Chocolate", "Strawberry" };
 string[] premFlavours = { "Durian", "Ube", "Sea Salt" };
+string[] waffleFlavours = {"Red Velvet", "Charcoal", "Pandan"};
 
 //Customers
 Dictionary<int, Customer> customers = new Dictionary<int, Customer>();
@@ -303,7 +304,6 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
     bool InvalidOption = false;
     bool InvalidScoopNum = false;
     bool InvalidFlavourType = false;
-    bool InvalidFlavourPremium = false;
     bool InvalidFlavourQuantity = false;
     bool InvalidToppingType = false;
     bool InvalidWaffleFlavour = false;
@@ -313,19 +313,19 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
     string option;
     int scoopnum;
     string flavourtype;
-    bool flavourpremium;
-    int flavourquantity;
-    string toppingtype;
+    bool flavourpremium = false;
+    int flavourquantity = 0;
+    string toppingtype = null;
     string waffleflavour;
-    bool dipped;
+    bool dipped = false;
     string addicecream;
+    Customer customer = null;
 
     ListAllCustomers(customers);
     Console.WriteLine();
     do
     {
         Console.Write("Enter your customer ID: ");
-        id = Convert.ToInt32(Console.ReadLine());
         if (!int.TryParse(Console.ReadLine(), out id))
         {
             Console.WriteLine("Invalid ID format. Please enter a valid integer.");
@@ -334,39 +334,25 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
         else
         {
             InvalidID = false;
-        }
-    } while (InvalidID);
-    
-    if (customers.ContainsKey(id))
-    {
-        Customer customer = customers[id];
-    }
-    else
-    {
-        Console.WriteLine("ID entered is invalid! Please try again.");
-        do
-        {
-            Console.Write("Enter your customer ID: ");
-            id = Convert.ToInt32(Console.ReadLine());
-            if (!int.TryParse(Console.ReadLine(), out id))
+            if (customers.ContainsKey(id))
             {
-                Console.WriteLine("Invalid ID format. Please enter a valid integer.");
-                InvalidID = true;
+                customer = customers[id];
             }
             else
             {
-                InvalidID = false;
+                Console.WriteLine("ID entered is invalid! Please try again.");
+                InvalidID = true;
             }
-        } while (InvalidID);
-    }
-
+        }
+    } while (InvalidID);
+    
     Order order = new Order();
 
     do
     {
         Console.Write("Enter option: ");
         option = Console.ReadLine();
-        if (string.IsNullOrEmpty(option))
+        if (string.IsNullOrWhiteSpace(option))
         {
             Console.WriteLine("Invalid option! Please enter a valid option.");
             InvalidOption = true;
@@ -380,7 +366,6 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
     do
     {
         Console.Write("Enter number of scoops: ");
-        scoopnum = Convert.ToInt32(Console.ReadLine());
         if (!int.TryParse(Console.ReadLine(), out scoopnum))
         {
             Console.WriteLine("Invalid option! Please enter a valid option.");
@@ -394,42 +379,39 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
     
     List<Flavour> flavours = new List<Flavour>();
     
-    do
-    {
-        Console.Write("Enter flavour type (or nil to stop adding): ");
-        flavourtype = Console.ReadLine();
-        if (string.IsNullOrEmpty(flavourtype))
-        {
-            Console.WriteLine("Invalid Flavour Type! Please enter a valid Flavour Type.");
-            InvalidFlavourType = true;
-        }
-        else
-        {
-            InvalidFlavourType= false;
-        }
-    } while (InvalidFlavourType);
-    
-    while (flavourtype != "nil")
+    while (flavourquantity < scoopnum)
     {
         do
         {
-            Console.Write("Is it premium? (True/False): ");
-            flavourpremium = Convert.ToBoolean(Console.ReadLine());
-            if (!bool.TryParse(Console.ReadLine(), out flavourpremium))
+            Console.Write("Enter flavour type: ");
+            flavourtype = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(flavourtype))
             {
-                Console.WriteLine("Invalid input! Please enter either 'True' or 'False'.");
-                InvalidFlavourPremium = true;
+                Console.WriteLine("Invalid Flavour Type! Please enter a valid Flavour Type.");
+                InvalidFlavourType = true;
             }
             else
             {
-                InvalidFlavourPremium = false;
-            }
-        } while (InvalidFlavourPremium);
+                InvalidFlavourType= false;
+                if (premFlavours.Contains(flavourtype))
+                {
+                    flavourpremium = true;
+                }
+                else if (regFlavours.Contains(flavourtype))
+                {
+                    flavourpremium = false;
+                }
+                else
+                {
+                    Console.WriteLine("Flavour entered not in menu! Please enter a different flavour.");
+                    InvalidFlavourType = true;
+                }
+        }
+        } while (InvalidFlavourType);
 
         do
         {
             Console.Write("Enter flavour quantity: ");
-            flavourquantity = Convert.ToInt32(Console.ReadLine());
             if (!int.TryParse(Console.ReadLine(), out flavourquantity))
             {
                 Console.WriteLine("Invalid input! Please enter valid Flavour Quantity.");
@@ -438,37 +420,94 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
             else
             {
                 InvalidFlavourQuantity = false;
+                if (flavourquantity > scoopnum)
+                {
+                    Console.WriteLine("Entered quantity more than scoop number. Please try again.");
+                    InvalidFlavourQuantity = true;
+                }
             }
         } while (InvalidFlavourQuantity);
-        Console.Write("Enter flavour quantity: ");
-        int flavourquantity = Convert.ToInt32(Console.ReadLine());
+
         Flavour flavour = new Flavour(flavourtype, flavourpremium, flavourquantity);
         flavours.Add(flavour);
-        Console.Write("Enter flavour (or nil to stop adding): ");
-        flavourtype = Console.ReadLine();
     }
     List<Topping> toppings = new List<Topping>();
-    Console.Write("Enter topping (or nil to stop adding): ");
-    string toppingtype = Console.ReadLine();
     while (toppingtype != "nil")
     {
+        do
+        {
+            Console.Write("Enter topping (or nil to stop adding): ");
+            toppingtype = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(toppingtype))
+            {
+                Console.WriteLine("Invalid Topping Type! Please enter a valid Topping Type.");
+                InvalidToppingType = true;
+            }
+            else
+            {
+                InvalidToppingType= false;
+                if (Toppings.Contains(toppingtype))
+                {
+                    continue;
+                }
+                else if (toppingtype == "nil")
+                {
+                    continue;
+                }
+                else
+                {
+                    InvalidToppingType = true;
+                }
+            }
+        } while (InvalidToppingType);
         Topping topping = new Topping(toppingtype);
         toppings.Add(topping);
-        Console.Write("Enter topping (or nil to stop adding): ");
-        toppingtype = Console.ReadLine();
     }
 
     IceCream iceCream = null;
     switch (option)
     {
         case "Waffle":
-            Console.Write("Enter waffle flavour: ");
-            string waffleflavour = Console.ReadLine();
+            do
+            {
+                Console.Write("Enter waffle flavour: ");
+                waffleflavour = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(waffleflavour))
+                {
+                    Console.WriteLine("Waffle Flavour entered invalid. Try again!");
+                    InvalidWaffleFlavour = true;
+                }
+                else
+                {
+                    InvalidWaffleFlavour = false;
+                    if (waffleFlavours.Contains(waffleflavour))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Waffle Flavour entered is not on the menu. Try again!");
+                        InvalidWaffleFlavour = true;
+                    }
+                }
+            } while (InvalidWaffleFlavour);
+            
             iceCream = new Waffle("Waffle", scoopnum, flavours, toppings, waffleflavour);
             break;
         case "Cone":
-            Console.Write("Is cone dipped? (True/False): ");
-            bool dipped = Convert.ToBoolean(Console.ReadLine());
+            do
+            {
+                Console.Write("Is cone dipped? (True/False): ");
+                if (!bool.TryParse(Console.ReadLine(), out dipped))
+                {
+                    Console.WriteLine("Entered invalid input. Try again.");
+                    InvalidDipped = true;
+                }
+                else
+                {
+                    InvalidDipped = false;
+                }
+            }while (InvalidDipped);
             iceCream = new Cone("Cone", scoopnum, flavours, toppings, dipped);
             break;
         case "Cup":
@@ -478,49 +517,169 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
     order.AddIceCream(iceCream);
 
     Console.Write("Add Another Ice Cream? [Y/N]: ");
-    string addicecream = Console.ReadLine();
+    addicecream = Console.ReadLine();
     while (addicecream == "Y")
     {
-        Console.Write("Enter option: ");
-        option = Console.ReadLine();
-        Console.Write("Enter number of scoops: ");
-        scoopnum = Convert.ToInt32(Console.ReadLine());
-        flavours = new List<Flavour>();
-        Console.Write("Enter flavour type (or nil to stop adding): ");
-        flavourtype = Console.ReadLine();
-        while (flavourtype != "nil")
+        do
         {
-            Console.Write("Is it premium? (True/False): ");
-            bool flavourpremium = Convert.ToBoolean(Console.ReadLine());
-            Console.Write("Enter flavour quantity: ");
-            int flavourquantity = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Enter option: ");
+            option = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(option))
+            {
+                Console.WriteLine("Invalid option! Please enter a valid option.");
+                InvalidOption = true;
+            }
+            else
+            {
+                InvalidOption = false;
+            }
+        } while (InvalidOption);
+
+        do
+        {
+            Console.Write("Enter number of scoops: ");
+            if (!int.TryParse(Console.ReadLine(), out scoopnum))
+            {
+                Console.WriteLine("Invalid option! Please enter a valid option.");
+                InvalidScoopNum = true;
+            }
+            else
+            {
+                InvalidScoopNum= false;
+            }
+        } while (InvalidScoopNum);
+
+        flavours = new List<Flavour>();
+
+        while (flavourquantity < scoopnum)
+        {
+            do
+            {
+                Console.Write("Enter flavour type: ");
+                flavourtype = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(flavourtype))
+                {
+                    Console.WriteLine("Invalid Flavour Type! Please enter a valid Flavour Type.");
+                    InvalidFlavourType = true;
+                }
+                else
+                {
+                    InvalidFlavourType= false;
+                    if (premFlavours.Contains(flavourtype))
+                    {
+                        flavourpremium = true;
+                    }
+                    else if (regFlavours.Contains(flavourtype))
+                    {
+                        flavourpremium = false;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Flavour entered not in menu! Please enter a different flavour.");
+                        InvalidFlavourType = true;
+                    }
+                }
+            } while (InvalidFlavourType);
+
+            do
+            {
+                Console.Write("Enter flavour quantity: ");
+                if (!int.TryParse(Console.ReadLine(), out flavourquantity))
+                {
+                    Console.WriteLine("Invalid input! Please enter valid Flavour Quantity.");
+                    InvalidFlavourQuantity = true;
+                }
+                else
+                {
+                    InvalidFlavourQuantity = false;
+                    if (flavourquantity > scoopnum)
+                    {
+                        Console.WriteLine("Entered quantity more than scoop number. Please try again.");
+                        InvalidFlavourQuantity = true;
+                    }
+                }
+            } while (InvalidFlavourQuantity);
+
             Flavour flavour = new Flavour(flavourtype, flavourpremium, flavourquantity);
             flavours.Add(flavour);
-            Console.Write("Enter flavour (or nil to stop adding): ");
-            flavourtype = Console.ReadLine();
         }
         toppings = new List<Topping>();
-        Console.Write("Enter topping (or nil to stop adding): ");
-        toppingtype = Console.ReadLine();
         while (toppingtype != "nil")
         {
+            do
+            {
+                Console.Write("Enter topping (or nil to stop adding): ");
+                toppingtype = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(toppingtype))
+                {
+                    Console.WriteLine("Invalid Topping Type! Please enter a valid Topping Type.");
+                    InvalidToppingType = true;
+                }
+                else
+                {
+                    InvalidToppingType= false;
+                    if (Toppings.Contains(toppingtype))
+                    {
+                        continue;
+                    }
+                    else if (toppingtype == "nil")
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        InvalidToppingType = true;
+                    }
+                }
+            } while (InvalidToppingType);
             Topping topping = new Topping(toppingtype);
             toppings.Add(topping);
-            Console.Write("Enter topping (or nil to stop adding): ");
-            toppingtype = Console.ReadLine();
         }
 
         iceCream = null;
         switch (option)
         {
             case "Waffle":
-                Console.Write("Enter waffle flavour: ");
-                string waffleflavour = Console.ReadLine();
+                do
+                {
+                    Console.Write("Enter waffle flavour: ");
+                    waffleflavour = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(waffleflavour))
+                    {
+                        Console.WriteLine("Waffle Flavour entered invalid. Try again!");
+                        InvalidWaffleFlavour = true;
+                    }
+                    else
+                    {
+                        InvalidWaffleFlavour = false;
+                        if (waffleFlavours.Contains(waffleflavour))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Waffle Flavour entered is not on the menu. Try again!");
+                            InvalidWaffleFlavour = true;
+                        }
+                    }
+                } while (InvalidWaffleFlavour);
+
                 iceCream = new Waffle("Waffle", scoopnum, flavours, toppings, waffleflavour);
                 break;
             case "Cone":
-                Console.Write("Is cone dipped? (True/False): ");
-                bool dipped = Convert.ToBoolean(Console.ReadLine());
+                do
+                {
+                    Console.Write("Is cone dipped? (True/False): ");
+                    if (!bool.TryParse(Console.ReadLine(), out dipped))
+                    {
+                        Console.WriteLine("Entered invalid input. Try again.");
+                        InvalidDipped = true;
+                    }
+                    else
+                    {
+                        InvalidDipped = false;
+                    }
+                } while (InvalidDipped);
                 iceCream = new Cone("Cone", scoopnum, flavours, toppings, dipped);
                 break;
             case "Cup":
@@ -555,11 +714,34 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
 //basic feature 5 - Display order details of a customer
 void DisplayOrderDetailsOfCustomer(Dictionary<int, Customer> customers)
 {
+    bool InvalidID;
+    int id;
+    Customer customer = null;
+
     ListAllCustomers(customers);
     Console.WriteLine();
-    Console.Write("Enter your customer ID: ");
-    int id = Convert.ToInt32(Console.ReadLine());
-    Customer customer = customers[id];
+    do
+    {
+        Console.Write("Enter your customer ID: ");
+        if (!int.TryParse(Console.ReadLine(), out id))
+        {
+            Console.WriteLine("Invalid ID format. Please enter a valid integer.");
+            InvalidID = true;
+        }
+        else
+        {
+            InvalidID = false;
+            if (customers.ContainsKey(id))
+            {
+                customer = customers[id];
+            }
+            else
+            {
+                Console.WriteLine("ID entered is invalid! Please try again.");
+                InvalidID = true;
+            }
+        }
+    } while (InvalidID);
 
     Console.WriteLine();
     foreach (Order order in customer.OrderHistory)
@@ -621,11 +803,54 @@ void DisplayOrderDetailsOfCustomer(Dictionary<int, Customer> customers)
 //basic feature 6 - Modify order details
 void ModifyOrderDetails(Dictionary<int, Customer> customers)
 {
+    bool InvalidID = false;
+    bool InvalidOption = false;
+    bool InvalidIceCreamNo = false;
+    bool InvalidIceCreamOption = false;
+    bool InvalidScoopNum = false;
+    bool InvalidFlavourType = false;
+    bool InvalidFlavourQuantity = false;
+    bool InvalidToppingType = false;
+    bool InvalidWaffleFlavour = false;
+    bool InvalidDipped = false;
+    int id;
+    Customer customer = null;
+    int option = 0;
+    int IceCreamNo = 0;
+    string icecreamoption;
+    int scoopnum;
+    string flavourtype;
+    bool flavourpremium = false;
+    int flavourquantity = 0;
+    string toppingtype = null;
+    string waffleflavour;
+    bool dipped = false;
+
     ListAllCustomers(customers);
     Console.WriteLine();
-    Console.Write("Enter your customer ID: ");
-    int id = Convert.ToInt32(Console.ReadLine());
-    Customer customer = customers[id];
+    do
+    {
+        Console.Write("Enter your customer ID: ");
+        if (!int.TryParse(Console.ReadLine(), out id))
+        {
+            Console.WriteLine("Invalid ID format. Please enter a valid integer.");
+            InvalidID = true;
+        }
+        else
+        {
+            InvalidID = false;
+            if (customers.ContainsKey(id))
+            {
+                customer = customers[id];
+            }
+            else
+            {
+                Console.WriteLine("ID entered is invalid! Please try again.");
+                InvalidID = true;
+            }
+        }
+    } while (InvalidID);
+
     if (customer.CurrentOrder != null)
     {
         Order currentOrder = customer.CurrentOrder;
@@ -645,62 +870,215 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
                 Console.WriteLine(topping.ToString());
             }
         }
-        Console.WriteLine();
-        Console.WriteLine("Choose one of the following options: ");
-        Console.WriteLine("[1] Choose an existing ice cream object to modify.");
-        Console.WriteLine("[2] Add an entirely new ice cream object to the order.");
-        Console.WriteLine("[3] Choose an existing ice cream object to delete from the order.");
-        Console.Write("Enter option: ");
-        int option = Convert.ToInt32(Console.ReadLine());
+
+        do
+        {
+            Console.WriteLine();
+            Console.WriteLine("Choose one of the following options: ");
+            Console.WriteLine("[1] Choose an existing ice cream object to modify.");
+            Console.WriteLine("[2] Add an entirely new ice cream object to the order.");
+            Console.WriteLine("[3] Choose an existing ice cream object to delete from the order.");
+            Console.Write("Enter option: ");
+            if (!int.TryParse(Console.ReadLine(), out id))
+            {
+                Console.WriteLine("Option entered is invalid. Try again!");
+                InvalidOption = true;
+            }
+            else
+            {
+                InvalidOption = false;
+                if (id != 1 || id != 2 || id != 3)
+                {
+                    Console.WriteLine("Option entered is invalid. Try again!");
+                    InvalidOption = true;
+                }
+                else continue;
+            }
+
+        } while (InvalidOption);
+        
+
         Console.WriteLine();
         if (option == 1)
         {
-            Console.WriteLine("Enter which ice cream to modify: ");
-            int IceCreamNo = Convert.ToInt32(Console.ReadLine());
-            currentOrder.ModifyIceCream(IceCreamNo);
+            do
+            {
+                Console.WriteLine("Enter which ice cream to modify: ");
+                if (!int.TryParse(Console.ReadLine(), out IceCreamNo))
+                {
+                    Console.WriteLine("Value inputted is not an integer. Try again.");
+                    InvalidIceCreamNo = true;
+                }
+                else
+                {
+                    InvalidIceCreamNo = false;
+                }
+
+            } while (InvalidIceCreamNo);
+            currentOrder.ModifyIceCream(IceCreamNo, premFlavours, regFlavours, Toppings, waffleFlavours);
         }
         else if (option == 2)
         {
-            Console.WriteLine("Enter ice cream option: ");
-            string icecreamoption = Console.ReadLine();
-            Console.WriteLine("Enter number of scoops: ");
-            int scoopnum = Convert.ToInt32(Console.ReadLine());
-            List<Flavour> flavours = new List<Flavour>();
-            Console.WriteLine("Enter flavour type (or nil to stop adding): ");
-            string flavourtype = Console.ReadLine();
-            while (flavourtype != "nil")
+            do
             {
-                Console.WriteLine("Is it premium? (True/False): ");
-                bool flavourpremium = Convert.ToBoolean(Console.ReadLine());
-                Console.WriteLine("Enter flavour quantity: ");
-                int flavourquantity = Convert.ToInt32(Console.ReadLine());
+                Console.Write("Enter option: ");
+                icecreamoption = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(icecreamoption))
+                {
+                    Console.WriteLine("Invalid option! Please enter a valid option.");
+                    InvalidIceCreamOption = true;
+                }
+                else
+                {
+                    InvalidIceCreamOption = false;
+                }
+            } while (InvalidIceCreamOption);
+
+            do
+            {
+                Console.Write("Enter number of scoops: ");
+                if (!int.TryParse(Console.ReadLine(), out scoopnum))
+                {
+                    Console.WriteLine("Invalid option! Please enter a valid option.");
+                    InvalidScoopNum = true;
+                }
+                else
+                {
+                    InvalidScoopNum= false;
+                }
+            } while (InvalidScoopNum);
+
+            List<Flavour> flavours = new List<Flavour>();
+
+            while (flavourquantity < scoopnum)
+            {
+                do
+                {
+                    Console.Write("Enter flavour type: ");
+                    flavourtype = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(flavourtype))
+                    {
+                        Console.WriteLine("Invalid Flavour Type! Please enter a valid Flavour Type.");
+                        InvalidFlavourType = true;
+                    }
+                    else
+                    {
+                        InvalidFlavourType= false;
+                        if (premFlavours.Contains(flavourtype))
+                        {
+                            flavourpremium = true;
+                        }
+                        else if (regFlavours.Contains(flavourtype))
+                        {
+                            flavourpremium = false;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Flavour entered not in menu! Please enter a different flavour.");
+                            InvalidFlavourType = true;
+                        }
+                    }
+                } while (InvalidFlavourType);
+
+                do
+                {
+                    Console.Write("Enter flavour quantity: ");
+                    if (!int.TryParse(Console.ReadLine(), out flavourquantity))
+                    {
+                        Console.WriteLine("Invalid input! Please enter valid Flavour Quantity.");
+                        InvalidFlavourQuantity = true;
+                    }
+                    else
+                    {
+                        InvalidFlavourQuantity = false;
+                        if (flavourquantity > scoopnum)
+                        {
+                            Console.WriteLine("Entered quantity more than scoop number. Please try again.");
+                            InvalidFlavourQuantity = true;
+                        }
+                    }
+                } while (InvalidFlavourQuantity);
+
                 Flavour flavour = new Flavour(flavourtype, flavourpremium, flavourquantity);
                 flavours.Add(flavour);
-                Console.WriteLine("Enter flavour (or nil to stop adding): ");
-                flavourtype = Console.ReadLine();
             }
             List<Topping> toppings = new List<Topping>();
-            Console.WriteLine("Enter topping (or nil to stop adding): ");
-            string toppingtype = Console.ReadLine();
             while (toppingtype != "nil")
             {
+                do
+                {
+                    Console.Write("Enter topping (or nil to stop adding): ");
+                    toppingtype = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(toppingtype))
+                    {
+                        Console.WriteLine("Invalid Topping Type! Please enter a valid Topping Type.");
+                        InvalidToppingType = true;
+                    }
+                    else
+                    {
+                        InvalidToppingType= false;
+                        if (Toppings.Contains(toppingtype))
+                        {
+                            continue;
+                        }
+                        else if (toppingtype == "nil")
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            InvalidToppingType = true;
+                        }
+                    }
+                } while (InvalidToppingType);
                 Topping topping = new Topping(toppingtype);
                 toppings.Add(topping);
-                Console.WriteLine("Enter topping (or nil to stop adding): ");
-                toppingtype = Console.ReadLine();
             }
 
             IceCream iceCream = null;
             switch (icecreamoption)
             {
                 case "Waffle":
-                    Console.Write("Enter waffle flavour: ");
-                    string waffleflavour = Console.ReadLine();
+                    do
+                    {
+                        Console.Write("Enter waffle flavour: ");
+                        waffleflavour = Console.ReadLine();
+                        if (string.IsNullOrWhiteSpace(waffleflavour))
+                        {
+                            Console.WriteLine("Waffle Flavour entered invalid. Try again!");
+                            InvalidWaffleFlavour = true;
+                        }
+                        else
+                        {
+                            InvalidWaffleFlavour = false;
+                            if (waffleFlavours.Contains(waffleflavour))
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Waffle Flavour entered is not on the menu. Try again!");
+                                InvalidWaffleFlavour = true;
+                            }
+                        }
+                    } while (InvalidWaffleFlavour);
+
                     iceCream = new Waffle("Waffle", scoopnum, flavours, toppings, waffleflavour);
                     break;
                 case "Cone":
-                    Console.Write("Is cone dipped? (True/False): ");
-                    bool dipped = Convert.ToBoolean(Console.ReadLine());
+                    do
+                    {
+                        Console.Write("Is cone dipped? (True/False): ");
+                        if (!bool.TryParse(Console.ReadLine(), out dipped))
+                        {
+                            Console.WriteLine("Entered invalid input. Try again.");
+                            InvalidDipped = true;
+                        }
+                        else
+                        {
+                            InvalidDipped = false;
+                        }
+                    } while (InvalidDipped);
                     iceCream = new Cone("Cone", scoopnum, flavours, toppings, dipped);
                     break;
                 case "Cup":
@@ -711,8 +1089,22 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
         }
         else if (option == 3)
         {
-            Console.WriteLine("Enter which ice cream to delete: ");
-            int IceCreamNo = Convert.ToInt32(Console.ReadLine()) - 1;
+            do
+            {
+                Console.WriteLine("Enter which ice cream to delete: ");
+                if (!int.TryParse(Console.ReadLine(), out IceCreamNo))
+                {
+                    Console.WriteLine("Value inputted is not an integer. Try again.");
+                    InvalidIceCreamNo = true;
+                }
+                else
+                {
+                    InvalidIceCreamNo = false;
+                }
+
+            } while (InvalidIceCreamNo);
+
+            IceCreamNo -= 1;
             if (currentOrder.IceCreamList.Count > 1)
             {
                 currentOrder.DeleteIceCream(IceCreamNo);
@@ -752,6 +1144,9 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
 //advanced features - a - Process an order and checkout
 void ProcessOrderAndCheckout(Queue<Order> queue, Dictionary<int, Customer> customer)
 {
+    bool InvalidRedeemPoints = false;
+    int redeempoints = 0;
+
     Order order = queue.Dequeue();
     
     foreach (IceCream icecream in order.IceCreamList)
@@ -810,8 +1205,20 @@ void ProcessOrderAndCheckout(Queue<Order> queue, Dictionary<int, Customer> custo
             {
                 if (c.Rewards.Points > 0)
                 {
-                    Console.Write("Enter number of points to redeem: ");
-                    int redeempoints = Convert.ToInt32(Console.ReadLine());
+                    do
+                    {
+                        Console.Write("Enter number of points to redeem: ");
+                        if (!int.TryParse(Console.ReadLine(), out redeempoints))
+                        {
+                            Console.WriteLine("Enter a valid integer.");
+                            InvalidRedeemPoints = true;
+                        }
+                        else
+                        {
+                            InvalidRedeemPoints = false;
+                        }
+                    } while (InvalidRedeemPoints);
+                    
                     c.Rewards.RedeemPoints(redeempoints);
                     billamt -= redeempoints * 0.02;
                 }
@@ -841,15 +1248,28 @@ void ProcessOrderAndCheckout(Queue<Order> queue, Dictionary<int, Customer> custo
         }
         else continue;
     }
-
-
 }
 
 //advanced features - b - display monthly charged amounts breakdown & total charged amounts for the year
 void DisplayChargedAmounts(Dictionary<int, Order> orders)
 {
-    Console.Write("Enter the year: ");
-    int year = Convert.ToInt32(Console.ReadLine());
+    bool InvalidYear = false;
+    int year = 0;
+
+    do
+    {
+        Console.Write("Enter the year: ");
+        if (!int.TryParse(Console.ReadLine(), out year))
+        {
+            Console.WriteLine("Enter a valid integer.");
+            InvalidYear = true;
+        }
+        else
+        {
+            InvalidYear = false;
+        }
+    } while (InvalidYear);
+
     Dictionary<DateTime, Order> OrdersInYear = new Dictionary<DateTime, Order>();
     foreach (Order order in orders.Values)
     {
