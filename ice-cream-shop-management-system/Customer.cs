@@ -27,8 +27,23 @@ namespace ice_cream_shop_management_system
         }
         public Order MakeOrder()
         {
-            Console.WriteLine("Enter order id: ");
-            int id = Convert.ToInt32(Console.ReadLine());
+            bool InvalidID = false;
+            int id;
+
+            do
+            {
+                Console.WriteLine("Enter order id: ");
+                if (!int.TryParse(Console.ReadLine(), out id))
+                {
+                    InvalidID = true;
+                }
+                else
+                {
+                    InvalidID = false;
+                }
+            } while (InvalidID);
+            
+
             foreach (Order o in OrderHistory)
             {
                 if (o.Id == id)
