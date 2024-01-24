@@ -23,7 +23,7 @@ namespace ice_cream_shop_management_system
             Id = id;
             TimeReceived = timereceived;
         }
-        public void ModifyIceCream(int orderid,string[] premFlavours,string[] regFlavours, string[] Toppings, string[] waffleFlavours)
+        public void ModifyIceCream(int orderid,string[] Options, string[] premFlavours,string[] regFlavours, string[] Toppings, string[] waffleFlavours)
         {
             bool InvalidOption = false;
             bool InvalidScoopNum = false;
@@ -54,6 +54,15 @@ namespace ice_cream_shop_management_system
                 else
                 {
                     InvalidOption = false;
+                    if (Options.Contains(option))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Option does not exist in menu! Please enter a valid option.");
+                        InvalidOption = true;
+                    }
                 }
             } while (InvalidOption);
 
@@ -150,6 +159,7 @@ namespace ice_cream_shop_management_system
                         }
                         else
                         {
+                            Console.WriteLine("Topping entered not in menu. Try again!");
                             InvalidToppingType = true;
                         }
                     }

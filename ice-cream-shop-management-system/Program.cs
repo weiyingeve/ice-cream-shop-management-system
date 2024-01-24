@@ -14,6 +14,7 @@ string[] Toppings = { "Sprinkles", "Mochi", "Sago", "Oreos" };
 string[] regFlavours = { "Vanilla", "Chocolate", "Strawberry" };
 string[] premFlavours = { "Durian", "Ube", "Sea Salt" };
 string[] waffleFlavours = {"Red Velvet", "Charcoal", "Pandan"};
+string[] Options = { "Cup", "Cone", "Waffle" };
 
 //Customers
 Dictionary<int, Customer> customers = new Dictionary<int, Customer>();
@@ -374,6 +375,15 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
         else
         {
             InvalidOption = false;
+            if (Options.Contains(option))
+            {
+                continue;
+            }
+            else
+            {
+                Console.WriteLine("Option does not exist in menu! Please enter a valid option.");
+                InvalidOption = true;
+            }
         }
     } while (InvalidOption);
     
@@ -470,6 +480,7 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
                 }
                 else
                 {
+                    Console.WriteLine("Topping entered not in menu. Try again!");
                     InvalidToppingType = true;
                 }
             }
@@ -546,6 +557,15 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
             else
             {
                 InvalidOption = false;
+                if (option.Contains(option))
+                {
+                    continue;
+                }
+                else
+                {
+                    Console.WriteLine("Option does not exist in menu! Please enter a valid option.");
+                    InvalidOption = true;
+                }
             }
         } while (InvalidOption);
 
@@ -642,6 +662,7 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
                     }
                     else
                     {
+                        Console.WriteLine("Topping entered not in menu. Try again!");
                         InvalidToppingType = true;
                     }
                 }
@@ -929,7 +950,7 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
                 }
 
             } while (InvalidIceCreamNo);
-            currentOrder.ModifyIceCream(IceCreamNo, premFlavours, regFlavours, Toppings, waffleFlavours);
+            currentOrder.ModifyIceCream(IceCreamNo, Options, premFlavours, regFlavours, Toppings, waffleFlavours);
         }
         else if (option == 2)
         {
@@ -940,13 +961,22 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
                 if (string.IsNullOrWhiteSpace(icecreamoption))
                 {
                     Console.WriteLine("Invalid option! Please enter a valid option.");
-                    InvalidIceCreamOption = true;
+                    InvalidOption = true;
                 }
                 else
                 {
-                    InvalidIceCreamOption = false;
+                    InvalidOption = false;
+                    if (Options.Contains(icecreamoption))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Option does not exist in menu! Please enter a valid option.");
+                        InvalidOption = true;
+                    }
                 }
-            } while (InvalidIceCreamOption);
+            } while (InvalidOption);
 
             do
             {
@@ -1041,6 +1071,7 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
                         }
                         else
                         {
+                            Console.WriteLine("Topping entered not in menu. Try again!");
                             InvalidToppingType = true;
                         }
                     }
