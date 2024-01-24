@@ -650,7 +650,7 @@ void ProcessOrderAndCheckout(Queue<Order> queue, Dictionary<int, Customer> custo
     }
 
     double billamt = order.CalculateTotal();
-    Console.WriteLine($"Total Bill Amount: ${billamt}");
+    Console.WriteLine($"Total Bill Amount: ${billamt.ToString("0.00")}");
 
     foreach (Customer c in customers.Values)
     {
@@ -658,9 +658,69 @@ void ProcessOrderAndCheckout(Queue<Order> queue, Dictionary<int, Customer> custo
         {
             Console.WriteLine($"Membership status: {c.Rewards.Tier}");
             Console.WriteLine($"Points: {c.Rewards.Points}");
+            if (c.IsBirthday())
+            {
+                if (order.IceCreamList.Count > 1)
+                {
+                    double mostExp = 0;
+                    foreach (IceCream i in order.IceCreamList)
+                    {
+                        if (i.CalculatePrice() > mostExp)
+                        {
+                            mostExp = i.CalculatePrice();
+                        }
+                    }
+                    billamt -= mostExp;
+                }
+                else
+                {
+                    billamt = 0;
+                }
+            }
+
+            if (c.Rewards.PunchCard == 10)
+            {
+                billamt -= order.IceCreamList[0].CalculatePrice();
+                c.Rewards.PunchCard = 0;
+            }
+
+            if (c.Rewards.Tier == "Gold" || c.Rewards.Tier == "Silver")
+            {
+                if (c.Rewards.Points > 0)
+                {
+                    Console.Write("Enter number of points to redeem: ");
+                    int redeempoints = Convert.ToInt32(Console.ReadLine());
+                    c.Rewards.RedeemPoints(redeempoints);
+                    billamt -= redeempoints * 0.02;
+                }
+            }
+
+            Console.WriteLine($"Final Bill Amount: ${billamt.ToString("0.00")}");
+            Console.Write("Press any key to make payment: ");
+            var payment = Console.ReadLine();
+
+            foreach (IceCream ic in order.IceCreamList)
+            {
+                c.Rewards.Punch();
+            }
+            int earnedpoints = Convert.ToInt32(Math.Floor(billamt * 0.72));
+            c.Rewards.AddPoints(earnedpoints);
+            if (c.Rewards.Points >= 100)
+            {
+                c.Rewards.Tier = "Gold";
+            }
+            else if (c.Rewards.Points >= 50 && c.Rewards.Tier != "Gold")
+            {
+                c.Rewards.Tier = "Silver";
+            }
+            order.TimeFulfilled = DateTime.Now;
+            c.CurrentOrder = null;
+            c.OrderHistory.Add(order);
         }
         else continue;
     }
+
+
 }
 
 //advanced features - b - display monthly charged amounts breakdown & total charged amounts for the year
