@@ -219,13 +219,57 @@ void ListAllOrders(Dictionary<int, Customer> customers)
 //basic feature 3 - Register a new customer
 void NewCustomer(Dictionary<int, Customer> customers)
 {
-    Console.Write("Enter Name: ");
-    string name = Console.ReadLine();
-    Console.Write("Enter ID Number: ");
-    int id = Convert.ToInt32(Console.ReadLine());
-    Console.Write("Enter Date of Birth: ");
-    DateTime dob = DateTime.Parse(Console.ReadLine());
+    bool InvalidName = false;
+    bool InvalidID = false;
+    bool InvalidDOB = false;
+    string name;
+    int id;
+    DateTime dob;
 
+
+    do
+    {
+        Console.Write("Enter Name: ");
+        name = Console.ReadLine();
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            Console.WriteLine("Invalid name. Please enter a valid name.");
+            InvalidName = true;
+        }
+        else
+        {
+            InvalidName = false;
+        }
+    } while (InvalidName);
+
+    do
+    {
+        Console.Write("Enter ID Number: ");
+        if (!int.TryParse(Console.ReadLine(), out id))
+        {
+            Console.WriteLine("Invalid ID format. Please enter a valid integer.");
+            InvalidID = true;
+        }
+        else
+        {
+            InvalidID = false;
+        }
+    } while (InvalidID);
+
+    do
+    {
+        Console.Write("Enter Date of Birth: ");
+        if (!DateTime.TryParse(Console.ReadLine(), out dob))
+        {
+            Console.WriteLine("Invalid Date of Birth format. Please enter a valid date (MM/dd/yyyy).");
+            InvalidDOB = true;
+        }
+        else
+        {
+            InvalidDOB = false;
+        }
+    } while (InvalidDOB);
+    
     Customer customer = new Customer(name, id, dob);
     PointCard pointCard = new PointCard();
     pointCard.Tier = "Ordinary";
