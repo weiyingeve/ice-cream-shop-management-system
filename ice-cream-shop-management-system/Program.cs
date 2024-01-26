@@ -124,6 +124,8 @@ int DisplayMenu()
     Console.WriteLine("[4] Create a customer's order");
     Console.WriteLine("[5] Display order details of a customer");
     Console.WriteLine("[6] Modify order details");
+    Console.WriteLine("[7] Process an order and checkout");
+    Console.WriteLine("[8] Display monthly charged amounts breakdown & total charged amounts for the year");
     Console.WriteLine("[0] Exit");
     Console.WriteLine();
     do
@@ -255,12 +257,13 @@ void NewCustomer(Dictionary<int, Customer> customers)
         else
         {
             InvalidName = false;
+
         }
     } while (InvalidName);
 
     do
     {
-        Console.Write("Enter ID Number: ");
+        Console.Write("Enter ID Number (XXXXXX): ");
         if (!int.TryParse(Console.ReadLine(), out id))
         {
             Console.WriteLine("Invalid ID format. Please enter a valid integer.");
@@ -269,6 +272,20 @@ void NewCustomer(Dictionary<int, Customer> customers)
         else
         {
             InvalidID = false;
+            if (id < 0 || id > 999999)
+            {
+                Console.WriteLine("ID entered out of range. Please try again.");
+                InvalidID = true;
+            }
+            else if (customers.ContainsKey(id))
+            {
+                Console.WriteLine("Customer ID already exists. Try again.");
+                InvalidID = true;
+            }
+            else
+            {
+                continue;
+            }
         }
     } while (InvalidID);
 
@@ -277,12 +294,18 @@ void NewCustomer(Dictionary<int, Customer> customers)
         Console.Write("Enter Date of Birth: ");
         if (!DateTime.TryParse(Console.ReadLine(), out dob))
         {
-            Console.WriteLine("Invalid Date of Birth format. Please enter a valid date (MM/dd/yyyy).");
+            Console.WriteLine("Invalid Date of Birth format. Please enter a valid date (dd/MM/yyyy).");
             InvalidDOB = true;
         }
         else
         {
             InvalidDOB = false;
+            if (DateTime.Compare(DateTime.Now, dob) < 0)
+            {
+                Console.WriteLine("Date cannot be in the future. Please try again.");
+                InvalidDOB = true;
+            }
+            else continue;
         }
     } while (InvalidDOB);
     
@@ -301,13 +324,13 @@ void NewCustomer(Dictionary<int, Customer> customers)
     if (customers.ContainsKey(id))
     {
         Console.WriteLine();
-        Console.WriteLine("Customer resgistered successfully!");
+        Console.WriteLine("Customer registered successfully!");
         Console.WriteLine();
     }
     else
     {
         Console.WriteLine();
-        Console.WriteLine("Customer resistration failed!");
+        Console.WriteLine("Customer registration failed!");
         Console.WriteLine();
     }
 }
@@ -365,6 +388,10 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
 
     do
     {
+        Console.WriteLine("Options available: ");
+        Console.WriteLine("Cup");
+        Console.WriteLine("Cone");
+        Console.WriteLine("Waffle");
         Console.Write("Enter option: ");
         option = Console.ReadLine();
         if (string.IsNullOrWhiteSpace(option))
@@ -389,7 +416,7 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
     
     do
     {
-        Console.Write("Enter number of scoops: ");
+        Console.Write("Enter number of scoops(1/2/3): ");
         if (!int.TryParse(Console.ReadLine(), out scoopnum))
         {
             Console.WriteLine("Invalid option! Please enter a valid option.");
@@ -398,6 +425,12 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
         else
         {
             InvalidScoopNum= false;
+            if (scoopnum > 4 || scoopnum < 0)
+            {
+                Console.WriteLine("Invalid scoop number! Please enter a valid option.");
+                InvalidScoopNum = true;
+            }
+            else continue;
         }
     } while (InvalidScoopNum);
     
@@ -407,6 +440,13 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
     {
         do
         {
+            Console.WriteLine("Flavours available: ");
+            Console.WriteLine("Vanilla");
+            Console.WriteLine("Chocolate");
+            Console.WriteLine("Strawberry");
+            Console.WriteLine("Durian");
+            Console.WriteLine("Ube");
+            Console.WriteLine("Sea Salt");
             Console.Write("Enter flavour type: ");
             flavourtype = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(flavourtype))
@@ -914,7 +954,7 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
             Console.WriteLine("[2] Add an entirely new ice cream object to the order.");
             Console.WriteLine("[3] Choose an existing ice cream object to delete from the order.");
             Console.Write("Enter option: ");
-            if (!int.TryParse(Console.ReadLine(), out id))
+            if (!int.TryParse(Console.ReadLine(), out option))
             {
                 Console.WriteLine("Option entered is invalid. Try again!");
                 InvalidOption = true;
@@ -1167,6 +1207,7 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
     else
     {
         Console.WriteLine("No current orders.");
+        return;
     }
     foreach (IceCream iceCream in customer.CurrentOrder.IceCreamList)
     {
@@ -1191,8 +1232,18 @@ void ProcessOrderAndCheckout(Queue<Order> queue, Dictionary<int, Customer> custo
 {
     bool InvalidRedeemPoints = false;
     int redeempoints = 0;
+    Order order = null;
 
-    Order order = queue.Dequeue();
+    if (queue.Count > 0)
+    {
+        order = queue.Dequeue();
+    }
+    else
+    {
+        Console.WriteLine("No current orders in queue.");
+        return;
+    }
+    
     
     foreach (IceCream icecream in order.IceCreamList)
     {
@@ -1439,6 +1490,21 @@ while (option != 0)
     {
         ModifyOrderDetails(customers);
     }
+    else if (option == 7)
+    {
+        if (goldqueue.Count > 0)
+        {
+            ProcessOrderAndCheckout(goldqueue, customers);
+        }
+        else
+        {
+            ProcessOrderAndCheckout(orderqueue, customers);
+        }
+    }
+    else if (option == 8)
+    {
+        DisplayChargedAmounts(orders);
+    }
     else
     {
         Console.WriteLine("Invalid input! Please enter a valid input.");
@@ -1446,14 +1512,3 @@ while (option != 0)
     Console.WriteLine();
     option = DisplayMenu();
 }
-
-if (goldqueue.Count > 0)
-{
-    ProcessOrderAndCheckout(goldqueue, customers);
-}
-else
-{
-    ProcessOrderAndCheckout(orderqueue, customers);
-}
-
-DisplayChargedAmounts(orders);
