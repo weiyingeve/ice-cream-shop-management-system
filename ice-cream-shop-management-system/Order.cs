@@ -44,6 +44,10 @@ namespace ice_cream_shop_management_system
             int orderno = orderid - 1;
             do
             {
+                Console.WriteLine("Options available: ");
+                Console.WriteLine("Cup");
+                Console.WriteLine("Cone");
+                Console.WriteLine("Waffle");
                 Console.Write("Enter option: ");
                 option = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(option))
@@ -68,7 +72,7 @@ namespace ice_cream_shop_management_system
 
             do
             {
-                Console.Write("Enter number of scoops: ");
+                Console.Write("Enter number of scoops(1/2/3): ");
                 if (!int.TryParse(Console.ReadLine(), out scoopnum))
                 {
                     Console.WriteLine("Invalid option! Please enter a valid option.");
@@ -77,6 +81,12 @@ namespace ice_cream_shop_management_system
                 else
                 {
                     InvalidScoopNum= false;
+                    if (scoopnum > 3 || scoopnum < 1)
+                    {
+                        Console.WriteLine("Invalid scoop number! Please enter a valid option.");
+                        InvalidScoopNum = true;
+                    }
+                    else continue;
                 }
             } while (InvalidScoopNum);
 
@@ -86,6 +96,13 @@ namespace ice_cream_shop_management_system
             {
                 do
                 {
+                    Console.WriteLine("Flavours available: ");
+                    Console.WriteLine("Vanilla");
+                    Console.WriteLine("Chocolate");
+                    Console.WriteLine("Strawberry");
+                    Console.WriteLine("Durian");
+                    Console.WriteLine("Ube");
+                    Console.WriteLine("Sea Salt");
                     Console.Write("Enter flavour type: ");
                     flavourtype = Console.ReadLine();
                     if (string.IsNullOrWhiteSpace(flavourtype))
@@ -139,6 +156,11 @@ namespace ice_cream_shop_management_system
             {
                 do
                 {
+                    Console.WriteLine("Toppings available: ");
+                    Console.WriteLine("Sprinkles");
+                    Console.WriteLine("Mochi");
+                    Console.WriteLine("Sago");
+                    Console.WriteLine("Oreos");
                     Console.Write("Enter topping (or nil to stop adding): ");
                     toppingtype = Console.ReadLine();
                     if (string.IsNullOrWhiteSpace(toppingtype))
@@ -174,6 +196,10 @@ namespace ice_cream_shop_management_system
                 case "Waffle":
                     do
                     {
+                        Console.WriteLine("Waffle Flavours available: ");
+                        Console.WriteLine("Red Velvet");
+                        Console.WriteLine("Charcoal");
+                        Console.WriteLine("Pandan");
                         Console.Write("Enter waffle flavour: ");
                         waffleflavour = Console.ReadLine();
                         if (string.IsNullOrWhiteSpace(waffleflavour))
@@ -218,6 +244,7 @@ namespace ice_cream_shop_management_system
                     iceCream = new Cup("Cup", scoopnum, flavours, toppings);
                     break;
             }
+            IceCreamList[orderno] = iceCream;
         }
         public void AddIceCream(IceCream iceCream)
         {

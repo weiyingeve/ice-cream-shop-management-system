@@ -9,6 +9,7 @@ using ice_cream_shop_management_system;
 using System.Collections;
 using System.ComponentModel;
 using System.Data;
+using System.Linq;
 
 string[] Toppings = { "Sprinkles", "Mochi", "Sago", "Oreos" };
 string[] regFlavours = { "Vanilla", "Chocolate", "Strawberry" };
@@ -425,7 +426,7 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
         else
         {
             InvalidScoopNum= false;
-            if (scoopnum > 4 || scoopnum < 0)
+            if (scoopnum > 3 || scoopnum < 1)
             {
                 Console.WriteLine("Invalid scoop number! Please enter a valid option.");
                 InvalidScoopNum = true;
@@ -500,6 +501,11 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
     {
         do
         {
+            Console.WriteLine("Toppings available: ");
+            Console.WriteLine("Sprinkles");
+            Console.WriteLine("Mochi");
+            Console.WriteLine("Sago");
+            Console.WriteLine("Oreos");
             Console.Write("Enter topping (or nil to stop adding): ");
             toppingtype = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(toppingtype))
@@ -535,6 +541,10 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
         case "Waffle":
             do
             {
+                Console.WriteLine("Waffle Flavours available: ");
+                Console.WriteLine("Red Velvet");
+                Console.WriteLine("Charcoal");
+                Console.WriteLine("Pandan");
                 Console.Write("Enter waffle flavour: ");
                 waffleflavour = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(waffleflavour))
@@ -587,6 +597,10 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
     {
         do
         {
+            Console.WriteLine("Options available: ");
+            Console.WriteLine("Cup");
+            Console.WriteLine("Cone");
+            Console.WriteLine("Waffle");
             Console.Write("Enter option: ");
             option = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(option))
@@ -611,12 +625,17 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
 
         do
         {
-            Console.Write("Enter number of scoops: ");
+            Console.Write("Enter number of scoops (1/2/3): ");
             if (!int.TryParse(Console.ReadLine(), out scoopnum))
             {
                 Console.WriteLine("Invalid option! Please enter a valid option.");
                 InvalidScoopNum = true;
             }
+            else if (scoopnum < 1 || scoopnum > 3)
+            {
+                Console.WriteLine("Entered number out of range. Please try again.");
+                InvalidScoopNum = true;
+            }            
             else
             {
                 InvalidScoopNum= false;
@@ -629,6 +648,13 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
         {
             do
             {
+                Console.WriteLine("Flavours available: ");
+                Console.WriteLine("Vanilla");
+                Console.WriteLine("Chocolate");
+                Console.WriteLine("Strawberry");
+                Console.WriteLine("Durian");
+                Console.WriteLine("Ube");
+                Console.WriteLine("Sea Salt");
                 Console.Write("Enter flavour type: ");
                 flavourtype = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(flavourtype))
@@ -682,6 +708,11 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
         {
             do
             {
+                Console.WriteLine("Toppings available: ");
+                Console.WriteLine("Sprinkles");
+                Console.WriteLine("Mochi");
+                Console.WriteLine("Sago");
+                Console.WriteLine("Oreos");
                 Console.Write("Enter topping (or nil to stop adding): ");
                 toppingtype = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(toppingtype))
@@ -717,6 +748,10 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
             case "Waffle":
                 do
                 {
+                    Console.WriteLine("Waffle Flavours available: ");
+                    Console.WriteLine("Red Velvet");
+                    Console.WriteLine("Charcoal");
+                    Console.WriteLine("Pandan");
                     Console.Write("Enter waffle flavour: ");
                     waffleflavour = Console.ReadLine();
                     if (string.IsNullOrWhiteSpace(waffleflavour))
@@ -962,7 +997,7 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
             else
             {
                 InvalidOption = false;
-                if (id != 1 || id != 2 || id != 3)
+                if (option != 1 || option != 2 || option != 3)
                 {
                     Console.WriteLine("Option entered is invalid. Try again!");
                     InvalidOption = true;
@@ -996,6 +1031,10 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
         {
             do
             {
+                Console.WriteLine("Options available: ");
+                Console.WriteLine("Cup");
+                Console.WriteLine("Cone");
+                Console.WriteLine("Waffle");
                 Console.Write("Enter option: ");
                 icecreamoption = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(icecreamoption))
@@ -1020,7 +1059,7 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
 
             do
             {
-                Console.Write("Enter number of scoops: ");
+                Console.Write("Enter number of scoops(1/2/3): ");
                 if (!int.TryParse(Console.ReadLine(), out scoopnum))
                 {
                     Console.WriteLine("Invalid option! Please enter a valid option.");
@@ -1029,6 +1068,12 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
                 else
                 {
                     InvalidScoopNum= false;
+                    if (scoopnum > 3 || scoopnum < 1)
+                    {
+                        Console.WriteLine("Invalid scoop number! Please enter a valid option.");
+                        InvalidScoopNum = true;
+                    }
+                    else continue;
                 }
             } while (InvalidScoopNum);
 
@@ -1038,6 +1083,13 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
             {
                 do
                 {
+                    Console.WriteLine("Flavours available: ");
+                    Console.WriteLine("Vanilla");
+                    Console.WriteLine("Chocolate");
+                    Console.WriteLine("Strawberry");
+                    Console.WriteLine("Durian");
+                    Console.WriteLine("Ube");
+                    Console.WriteLine("Sea Salt");
                     Console.Write("Enter flavour type: ");
                     flavourtype = Console.ReadLine();
                     if (string.IsNullOrWhiteSpace(flavourtype))
@@ -1091,6 +1143,11 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
             {
                 do
                 {
+                    Console.WriteLine("Toppings available: ");
+                    Console.WriteLine("Sprinkles");
+                    Console.WriteLine("Mochi");
+                    Console.WriteLine("Sago");
+                    Console.WriteLine("Oreos");
                     Console.Write("Enter topping (or nil to stop adding): ");
                     toppingtype = Console.ReadLine();
                     if (string.IsNullOrWhiteSpace(toppingtype))
@@ -1126,6 +1183,10 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
                 case "Waffle":
                     do
                     {
+                        Console.WriteLine("Waffle Flavours available: ");
+                        Console.WriteLine("Red Velvet");
+                        Console.WriteLine("Charcoal");
+                        Console.WriteLine("Pandan");
                         Console.Write("Enter waffle flavour: ");
                         waffleflavour = Console.ReadLine();
                         if (string.IsNullOrWhiteSpace(waffleflavour))
@@ -1351,6 +1412,7 @@ void DisplayChargedAmounts(Dictionary<int, Order> orders)
 {
     bool InvalidYear = false;
     int year = 0;
+    int currentyear = DateTime.Now.Year;
 
     do
     {
@@ -1358,6 +1420,11 @@ void DisplayChargedAmounts(Dictionary<int, Order> orders)
         if (!int.TryParse(Console.ReadLine(), out year))
         {
             Console.WriteLine("Enter a valid integer.");
+            InvalidYear = true;
+        }
+        else if (year > currentyear)
+        {
+            Console.WriteLine("Date cannot be in the future. Please try again.");
             InvalidYear = true;
         }
         else
