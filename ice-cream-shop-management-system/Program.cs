@@ -187,10 +187,18 @@ void ListAllOrders(Dictionary<int, Customer> customers)
                     Console.WriteLine(flav.ToString());
                 }
                 Console.WriteLine("Ice cream toppings: ");
-                foreach (Topping topping in iceCream.Toppings)
+                if (iceCream.Toppings.Count > 0)
                 {
-                    Console.WriteLine(topping.ToString());
+                    foreach (Topping topping in iceCream.Toppings)
+                    {
+                        Console.WriteLine(topping.ToString());
+                    }
                 }
+                else
+                {
+                    Console.WriteLine("No toppings");
+                }
+                Console.WriteLine();
             }
             Console.WriteLine();
         }
@@ -220,10 +228,18 @@ void ListAllOrders(Dictionary<int, Customer> customers)
                     Console.WriteLine(flav.ToString());
                 }
                 Console.WriteLine("Ice cream toppings: ");
-                foreach (Topping topping in iceCream.Toppings)
+                if (iceCream.Toppings.Count > 0)
                 {
-                    Console.WriteLine(topping.ToString());
+                    foreach (Topping topping in iceCream.Toppings)
+                    {
+                        Console.WriteLine(topping.ToString());
+                    }
                 }
+                else
+                {
+                    Console.WriteLine("No toppings");
+                }
+                Console.WriteLine();
             }
             Console.WriteLine();
         }
@@ -354,6 +370,7 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
     string flavourtype;
     bool flavourpremium = false;
     int flavourquantity = 0;
+    int totalflavourquantity = 0;
     string toppingtype = null;
     string waffleflavour;
     bool dipped = false;
@@ -436,8 +453,9 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
     } while (InvalidScoopNum);
     
     List<Flavour> flavours = new List<Flavour>();
-    
-    while (flavourquantity < scoopnum)
+    totalflavourquantity = 0;
+
+    while (totalflavourquantity < scoopnum)
     {
         do
         {
@@ -490,6 +508,14 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
                     Console.WriteLine("Entered quantity more than scoop number. Please try again.");
                     InvalidFlavourQuantity = true;
                 }
+                totalflavourquantity += flavourquantity;
+
+                if (totalflavourquantity > scoopnum)
+                {
+                    Console.WriteLine("You've exceeded the scoop number. Please try again.");
+                    InvalidFlavourQuantity = true;
+                    totalflavourquantity -= flavourquantity;
+                }
             }
         } while (InvalidFlavourQuantity);
 
@@ -531,8 +557,11 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
                 }
             }
         } while (InvalidToppingType);
-        Topping topping = new Topping(toppingtype);
-        toppings.Add(topping);
+        if (toppingtype != "nil")
+        {
+            Topping topping = new Topping(toppingtype);
+            toppings.Add(topping);
+        }
     }
 
     IceCream iceCream = null;
@@ -611,7 +640,7 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
             else
             {
                 InvalidOption = false;
-                if (option.Contains(option))
+                if (Options.Contains(option))
                 {
                     continue;
                 }
@@ -625,26 +654,28 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
 
         do
         {
-            Console.Write("Enter number of scoops (1/2/3): ");
+            Console.Write("Enter number of scoops(1/2/3): ");
             if (!int.TryParse(Console.ReadLine(), out scoopnum))
             {
                 Console.WriteLine("Invalid option! Please enter a valid option.");
                 InvalidScoopNum = true;
             }
-            else if (scoopnum < 1 || scoopnum > 3)
-            {
-                Console.WriteLine("Entered number out of range. Please try again.");
-                InvalidScoopNum = true;
-            }            
             else
             {
                 InvalidScoopNum= false;
+                if (scoopnum > 3 || scoopnum < 1)
+                {
+                    Console.WriteLine("Invalid scoop number! Please enter a valid option.");
+                    InvalidScoopNum = true;
+                }
+                else continue;
             }
         } while (InvalidScoopNum);
 
         flavours = new List<Flavour>();
+        totalflavourquantity = 0;
 
-        while (flavourquantity < scoopnum)
+        while (totalflavourquantity < scoopnum)
         {
             do
             {
@@ -697,6 +728,14 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
                         Console.WriteLine("Entered quantity more than scoop number. Please try again.");
                         InvalidFlavourQuantity = true;
                     }
+                    totalflavourquantity += flavourquantity;
+
+                    if (totalflavourquantity > scoopnum)
+                    {
+                        Console.WriteLine("You've exceeded the scoop number. Please try again.");
+                        InvalidFlavourQuantity = true;
+                        totalflavourquantity -= flavourquantity;
+                    }
                 }
             } while (InvalidFlavourQuantity);
 
@@ -704,6 +743,7 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
             flavours.Add(flavour);
         }
         toppings = new List<Topping>();
+        toppingtype = null;
         while (toppingtype != "nil")
         {
             do
@@ -738,8 +778,11 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
                     }
                 }
             } while (InvalidToppingType);
-            Topping topping = new Topping(toppingtype);
-            toppings.Add(topping);
+            if (toppingtype != "nil")
+            {
+                Topping topping = new Topping(toppingtype);
+                toppings.Add(topping);
+            }
         }
 
         iceCream = null;
@@ -797,6 +840,9 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
                 break;
         }
         order.AddIceCream(iceCream);
+
+        Console.Write("Add Another Ice Cream? [Y/N]: ");
+        addicecream = Console.ReadLine();
     }
 
     customer.CurrentOrder = order;
@@ -869,10 +915,18 @@ void DisplayOrderDetailsOfCustomer(Dictionary<int, Customer> customers)
                     Console.WriteLine(flav.ToString());
                 }
                 Console.WriteLine("Ice cream toppings: ");
-                foreach (Topping topping in iceCream.Toppings)
+                if (iceCream.Toppings.Count > 0)
                 {
-                    Console.WriteLine(topping.ToString());
+                    foreach (Topping topping in iceCream.Toppings)
+                    {
+                        Console.WriteLine(topping.ToString());
+                    }
                 }
+                else
+                {
+                    Console.WriteLine("No toppings");
+                }
+                Console.WriteLine();
             }
             Console.WriteLine();
         }
@@ -897,10 +951,18 @@ void DisplayOrderDetailsOfCustomer(Dictionary<int, Customer> customers)
                 Console.WriteLine(flav.ToString());
             }
             Console.WriteLine("Ice cream toppings: ");
-            foreach (Topping topping in iceCream.Toppings)
+            if (iceCream.Toppings.Count > 0)
             {
-                Console.WriteLine(topping.ToString());
+                foreach (Topping topping in iceCream.Toppings)
+                {
+                    Console.WriteLine(topping.ToString());
+                }
             }
+            else
+            {
+                Console.WriteLine("No toppings");
+            }
+            Console.WriteLine();
         }
         Console.WriteLine();
     }
@@ -932,6 +994,7 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
     string flavourtype;
     bool flavourpremium = false;
     int flavourquantity = 0;
+    int totalflavourquantity = 0;
     string toppingtype = null;
     string waffleflavour;
     bool dipped = false;
@@ -975,10 +1038,18 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
                 Console.WriteLine(flav.ToString());
             }
             Console.WriteLine("Ice cream toppings: ");
-            foreach (Topping topping in iceCream.Toppings)
+            if (iceCream.Toppings.Count > 0)
             {
-                Console.WriteLine(topping.ToString());
+                foreach (Topping topping in iceCream.Toppings)
+                {
+                    Console.WriteLine(topping.ToString());
+                }
             }
+            else
+            {
+                Console.WriteLine("No toppings");
+            }
+            Console.WriteLine();
         }
 
         do
@@ -1078,8 +1149,9 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
             } while (InvalidScoopNum);
 
             List<Flavour> flavours = new List<Flavour>();
+            totalflavourquantity = 0;
 
-            while (flavourquantity < scoopnum)
+            while (totalflavourquantity < scoopnum)
             {
                 do
                 {
@@ -1132,6 +1204,15 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
                             Console.WriteLine("Entered quantity more than scoop number. Please try again.");
                             InvalidFlavourQuantity = true;
                         }
+
+                        totalflavourquantity += flavourquantity;
+
+                        if (totalflavourquantity > scoopnum)
+                        {
+                            Console.WriteLine("You've exceeded the scoop number. Please try again.");
+                            InvalidFlavourQuantity = true;
+                            totalflavourquantity -= flavourquantity;
+                        }
                     }
                 } while (InvalidFlavourQuantity);
 
@@ -1173,8 +1254,11 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
                         }
                     }
                 } while (InvalidToppingType);
-                Topping topping = new Topping(toppingtype);
-                toppings.Add(topping);
+                if (toppingtype != "nil")
+                {
+                    Topping topping = new Topping(toppingtype);
+                    toppings.Add(topping);
+                }
             }
 
             IceCream iceCream = null;
@@ -1281,10 +1365,18 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
             Console.WriteLine(flav.ToString());
         }
         Console.WriteLine("Ice cream toppings: ");
-        foreach (Topping topping in iceCream.Toppings)
+        if (iceCream.Toppings.Count > 0)
         {
-            Console.WriteLine(topping.ToString());
+            foreach (Topping topping in iceCream.Toppings)
+            {
+                Console.WriteLine(topping.ToString());
+            }
         }
+        else
+        {
+            Console.WriteLine("No toppings");
+        }
+        Console.WriteLine();
     }
 }
 
@@ -1317,10 +1409,18 @@ void ProcessOrderAndCheckout(Queue<Order> queue, Dictionary<int, Customer> custo
             Console.WriteLine(flav.ToString());
         }
         Console.WriteLine("Ice cream toppings: ");
-        foreach (Topping topping in icecream.Toppings)
+        if (icecream.Toppings.Count > 0)
         {
-            Console.WriteLine(topping.ToString());
+            foreach (Topping topping in icecream.Toppings)
+            {
+                Console.WriteLine(topping.ToString());
+            }
         }
+        else
+        {
+            Console.WriteLine("No toppings");
+        }
+        Console.WriteLine();
     }
 
     double billamt = order.CalculateTotal();

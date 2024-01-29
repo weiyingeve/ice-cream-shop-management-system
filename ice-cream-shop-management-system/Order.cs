@@ -37,6 +37,7 @@ namespace ice_cream_shop_management_system
             string flavourtype;
             bool flavourpremium = false;
             int flavourquantity = 0;
+            int totalflavourquantity = 0;
             string toppingtype = null;
             string waffleflavour;
             bool dipped = false;
@@ -91,8 +92,9 @@ namespace ice_cream_shop_management_system
             } while (InvalidScoopNum);
 
             List<Flavour> flavours = new List<Flavour>();
+            totalflavourquantity = 0;
 
-            while (flavourquantity < scoopnum)
+            while (totalflavourquantity < scoopnum)
             {
                 do
                 {
@@ -145,6 +147,15 @@ namespace ice_cream_shop_management_system
                             Console.WriteLine("Entered quantity more than scoop number. Please try again.");
                             InvalidFlavourQuantity = true;
                         }
+
+                        totalflavourquantity += flavourquantity;
+
+                        if (totalflavourquantity > scoopnum)
+                        {
+                            Console.WriteLine("You've exceeded the scoop number. Please try again.");
+                            InvalidFlavourQuantity = true;
+                            totalflavourquantity -= flavourquantity;
+                        }
                     }
                 } while (InvalidFlavourQuantity);
 
@@ -186,8 +197,11 @@ namespace ice_cream_shop_management_system
                         }
                     }
                 } while (InvalidToppingType);
-                Topping topping = new Topping(toppingtype);
-                toppings.Add(topping);
+                if (toppingtype != "nil")
+                {
+                    Topping topping = new Topping(toppingtype);
+                    toppings.Add(topping);
+                }
             }
 
             IceCream iceCream = null;
