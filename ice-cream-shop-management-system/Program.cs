@@ -876,7 +876,7 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
         {
             do
             {
-                Console.WriteLine("Enter which ice cream to delete: ");
+                Console.Write("Enter which ice cream to delete: ");
                 if (!int.TryParse(Console.ReadLine(), out IceCreamNo))
                 {
                     Console.WriteLine("Value inputted is not an integer. Try again.");
