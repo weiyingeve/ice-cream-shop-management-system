@@ -147,7 +147,11 @@ namespace ice_cream_shop_management_system
                             Console.WriteLine("Entered quantity more than scoop number. Please try again.");
                             InvalidFlavourQuantity = true;
                         }
-
+                        else if (flavourquantity < 1 && flavourquantity > 3)
+                        {
+                            Console.WriteLine("Must enter a value of 1 or more. ");
+                            InvalidFlavourQuantity = true;
+                        }
                         totalflavourquantity += flavourquantity;
 
                         if (totalflavourquantity > scoopnum)

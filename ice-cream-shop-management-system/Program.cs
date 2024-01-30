@@ -630,7 +630,7 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
                 else
                 {
                     InvalidIceCreamNo = false;
-                    if ((currentOrder.IceCreamList.Count + 1) < IceCreamNo)
+                    if ((IceCreamNo > currentOrder.IceCreamList.Count + 1))
                     {
                         Console.WriteLine("No such ice cream. Try again.");
                         InvalidIceCreamNo = true;
@@ -746,7 +746,11 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
                             Console.WriteLine("Entered quantity more than scoop number. Please try again.");
                             InvalidFlavourQuantity = true;
                         }
-
+                        else if (flavourquantity < 1 && flavourquantity > 3)
+                        {
+                            Console.WriteLine("Must enter a value of 1 or more. ");
+                            InvalidFlavourQuantity = true;
+                        }
                         totalflavourquantity += flavourquantity;
 
                         if (totalflavourquantity > scoopnum)
@@ -1026,6 +1030,12 @@ void ProcessOrderAndCheckout(Queue<Order> queue, Dictionary<int, Customer> custo
                         else
                         {
                             InvalidRedeemPoints = false;
+                            if (redeempoints > c.Rewards.Points)
+                            {
+                                Console.WriteLine("Points redeemed cannot exceed points the customer has.");
+                                InvalidRedeemPoints = true;
+                            }
+                            else continue;
                         }
                     } while (InvalidRedeemPoints);
                     
