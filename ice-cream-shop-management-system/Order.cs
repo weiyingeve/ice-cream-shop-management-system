@@ -197,7 +197,7 @@ namespace ice_cream_shop_management_system
                         }
                     }
                 } while (InvalidToppingType);
-                if (toppingtype != "nil")
+                if (toppingtype != "nil" && toppings.Count < 4)
                 {
                     Topping topping = new Topping(toppingtype);
                     toppings.Add(topping);
