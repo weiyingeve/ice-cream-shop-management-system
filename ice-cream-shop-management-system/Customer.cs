@@ -300,8 +300,26 @@ namespace ice_cream_shop_management_system
                 }
                 order.AddIceCream(iceCream);
 
-                Console.Write("Add Another Ice Cream? [Y/N]: ");
-                addicecream = Console.ReadLine().ToUpper();
+                do
+                {
+                    Console.Write("Add Another Ice Cream? [Y/N]: ");
+                    addicecream = Console.ReadLine().ToUpper();
+                    if (string.IsNullOrWhiteSpace(addicecream))
+                    {
+                        Console.WriteLine("Please enter Y/N.");
+                        InvalidAddIceCream = true;
+                    }
+                    else
+                    {
+                        InvalidAddIceCream = false;
+                        if (addicecream != "Y" && addicecream != "N")
+                        {
+                            Console.WriteLine("Please enter Y/N.");
+                            InvalidAddIceCream = true;
+                        }
+                    }
+                }while (InvalidAddIceCream);
+                
                 while (addicecream == "Y")
                 {
                     do
