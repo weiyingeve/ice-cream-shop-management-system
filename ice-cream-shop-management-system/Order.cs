@@ -202,6 +202,11 @@ namespace ice_cream_shop_management_system
                     Topping topping = new Topping(toppingtype);
                     toppings.Add(topping);
                 }
+                else if (toppings.Count == 4)
+                {
+                    Console.WriteLine("Max topping amount reached.");
+                    toppingtype = "nil";
+                }
             }
 
             IceCream iceCream = null;
