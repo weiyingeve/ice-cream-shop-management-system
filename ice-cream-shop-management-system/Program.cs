@@ -145,7 +145,7 @@ int DisplayMenu()
     return option;
 }
 
-//basic feature 1 - List all customers
+//basic feature 1 - List all customers (Charlotte)
 void ListAllCustomers(Dictionary<int, Customer> customers)
 {
     Console.WriteLine("{0, -10} {1, -10} {2, -15} {3, -20} {4, -15} {5, -10} {6, -10} {7,-10}",
@@ -165,7 +165,7 @@ void ListAllCustomers(Dictionary<int, Customer> customers)
     Console.WriteLine();
 }
 
-//basic feature 2 - List all current orders
+//basic feature 2 - List all current orders (Isabelle)
 void ListAllOrders(Dictionary<int, Customer> customers)
 {
     Console.WriteLine();
@@ -251,7 +251,7 @@ void ListAllOrders(Dictionary<int, Customer> customers)
     Console.WriteLine();
 }
 
-//basic feature 3 - Register a new customer
+//basic feature 3 - Register a new customer (Charlotte)
 void NewCustomer(Dictionary<int, Customer> customers)
 {
     bool InvalidName = false;
@@ -352,7 +352,7 @@ void NewCustomer(Dictionary<int, Customer> customers)
     }
 }
 
-//basic feature 4 - Create customer's order
+//basic feature 4 - Create customer's order (Charlotte)
 void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Order> orders)
 {
     bool InvalidID = false;
@@ -405,7 +405,7 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
         Console.WriteLine("Order made failed!");
     }
 }
-//basic feature 5 - Display order details of a customer
+//basic feature 5 - Display order details of a customer (Isabelle)
 void DisplayOrderDetailsOfCustomer(Dictionary<int, Customer> customers)
 {
     bool InvalidID;
@@ -510,7 +510,7 @@ void DisplayOrderDetailsOfCustomer(Dictionary<int, Customer> customers)
     }
 }
 
-//basic feature 6 - Modify order details
+//basic feature 6 - Modify order details (Isabelle)
 void ModifyOrderDetails(Dictionary<int, Customer> customers)
 {
     bool InvalidID = false;
@@ -945,7 +945,7 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
     }
 }
 
-//advanced features - a - Process an order and checkout
+//advanced features - a - Process an order and checkout (Charlotte)
 void ProcessOrderAndCheckout(Queue<Order> queue, Dictionary<int, Customer> customer)
 {
     bool InvalidRedeemPoints = false;
@@ -1083,7 +1083,7 @@ void ProcessOrderAndCheckout(Queue<Order> queue, Dictionary<int, Customer> custo
     }
 }
 
-//advanced features - b - display monthly charged amounts breakdown & total charged amounts for the year
+//advanced features - b - display monthly charged amounts breakdown & total charged amounts for the year (Isabelle)
 void DisplayChargedAmounts(Dictionary<int, Order> orders)
 {
     bool InvalidYear = false;
