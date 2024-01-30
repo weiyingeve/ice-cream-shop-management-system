@@ -156,7 +156,7 @@ void ListAllCustomers(Dictionary<int, Customer> customers)
     {
         Console.WriteLine("{0, -10} {1, -10} {2, -15:dd/MM/yyyy} {3, -20} {4, -15} {5, -10} {6, -10} {7, -10}",
             customer.Name, customer.MemberId, customer.Dob,
-            customer.CurrentOrder != null ? customer.CurrentOrder.Id.ToString() + 1 : "No Current Order",
+            customer.CurrentOrder != null ? customer.CurrentOrder.Id.ToString() : "No Current Order",
             string.Join(", ", customer.OrderHistory.Select(order => order.Id)),
             customer.Rewards.Points,
             customer.Rewards.PunchCard,
@@ -384,7 +384,7 @@ void CreateCustomerOrder(Dictionary<int, Customer> customers, Dictionary<int, Or
         }
     } while (InvalidID);
 
-    Order order = customer.MakeOrder(orders, Toppings, regFlavours, premFlavours, waffleFlavours, Options);
+    Order order = customer.MakeOrder(customers, orders, Toppings, regFlavours, premFlavours, waffleFlavours, Options);
     orders.Add(orders.Count + 1, order);
 
     if (customer.Rewards.Tier == "Gold")
@@ -634,6 +634,10 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
                     {
                         Console.WriteLine("No such ice cream. Try again.");
                         InvalidIceCreamNo = true;
+                    }
+                    else if (IceCreamNo < 1)
+                    {
+                        Console.WriteLine("Ice Cream No cannot be negative or 0. Please try again.");
                     }
                 }
 
@@ -886,6 +890,10 @@ void ModifyOrderDetails(Dictionary<int, Customer> customers)
                         Console.WriteLine("No such ice cream. Try again.");
                         InvalidIceCreamNo = true;
                     }
+                    else if (IceCreamNo < 1)
+                    {
+                        Console.WriteLine("Ice Cream No cannot be negative or 0. Please try again.");
+                    }
                 }
 
             } while (InvalidIceCreamNo);
@@ -1033,6 +1041,11 @@ void ProcessOrderAndCheckout(Queue<Order> queue, Dictionary<int, Customer> custo
                             if (redeempoints > c.Rewards.Points)
                             {
                                 Console.WriteLine("Points redeemed cannot exceed points the customer has.");
+                                InvalidRedeemPoints = true;
+                            }
+                            else if (redeempoints < 0)
+                            {
+                                Console.WriteLine("Points redeemed cannot be negative.");
                                 InvalidRedeemPoints = true;
                             }
                             else continue;

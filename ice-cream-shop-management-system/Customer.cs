@@ -26,8 +26,9 @@ namespace ice_cream_shop_management_system
             MemberId=memberId;
             Dob=dob;
         }
-        public Order MakeOrder(Dictionary<int, Order> orders, string[] Toppings, 
-            string[] regFlavours, string[] premFlavours, string[] waffleFlavours, string[] Options)
+        public Order MakeOrder(Dictionary<int, Customer> customers, Dictionary<int, Order> orders, string[] Toppings, 
+            string[] regFlavours, string[] premFlavours, string[] waffleFlavours, 
+            string[] Options)
         {
 
             bool InvalidOption = false;
@@ -56,7 +57,23 @@ namespace ice_cream_shop_management_system
             }
             else
             {
+                int largestOrderIndex = 0;
+                foreach (Customer c in customers.Values)
+                {
+                    foreach (Order o in c.OrderHistory)
+                    {
+                        largestOrderIndex = Math.Max(largestOrderIndex, o.Id);
+                    }
+
+                    if (c.CurrentOrder != null)
+                    {
+                        largestOrderIndex = Math.Max(largestOrderIndex, c.CurrentOrder.Id);
+                    }
+                }
+                    
+
                 Order order = new Order();
+                order.Id = largestOrderIndex + 1;
                 do
                 {
                     Console.WriteLine("Options available: ");
@@ -284,7 +301,7 @@ namespace ice_cream_shop_management_system
                 order.AddIceCream(iceCream);
 
                 Console.Write("Add Another Ice Cream? [Y/N]: ");
-                addicecream = Console.ReadLine();
+                addicecream = Console.ReadLine().ToUpper();
                 while (addicecream == "Y")
                 {
                     do
